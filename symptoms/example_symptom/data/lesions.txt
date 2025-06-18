@@ -1,1 +1,0 @@
-binary lesion files here, .nii or .nii.gz
