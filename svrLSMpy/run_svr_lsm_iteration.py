@@ -11,26 +11,41 @@ import time
 from pathlib import Path
 import numpy as np
 
-def run_svr_lsm_iteration(symptom_folder, csv_name,behaviour_name,do_regress_out_lesion_volume, normalize_vector, max_score,min_patient_count, param_grid, n_permutations, alpha, n_splits, num_slices):
+def run_svr_lsm_iteration(symptom_folder,
+                          csv_path,
+                          output_path,
+                          behaviour_name="behavioural_deficit",
+                          do_regress_out_lesion_volume=True, 
+                          normalize_vector=True, 
+                          max_score=100,
+                          min_patient_count='10%', 
+                          param_grid = {
+                                        'C': [50, 40, 30, 20, 10, 5],
+                                        'gamma': [10, 5, 4, 3, 2, 1],
+                                        'epsilon': [0.1]
+                                        },
+                          n_permutations=1000, 
+                          alpha=0.05, 
+                          n_splits=5, 
+                          num_slices=7):
     # base_folder = Path.cwd()  # CURRENT DIRECTORY
     start_time = time.time()
-
+    
+    output_folder = f"{output_path}/{symptom}_{n_permutations}_results_{get_current_datetime_for_filename()}"
+    output_folder = Path(output_folder)
+                              
+    Path(output_folder).mkdir(parents=True, exist_ok=True)
     #Make folder to save all results
-    symptom = symptom_folder.name
-
+    symptom = behaviour_name
 
     # Load lesions and behaviors
     lesion_folder = symptom_folder / 'data'
-    csv_file = symptom_folder / csv_name
 
-    lesion_files, behaviors, covariates, lesion_volumes = load_lesions_and_behaviors(lesion_folder, csv_file, max_score, do_regress_out_lesion_volume)
+    lesion_files, behaviors, covariates, lesion_volumes = load_lesions_and_behaviors(lesion_folder, csv_path, max_score, do_regress_out_lesion_volume, output_folder)
     print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)),end="\n\n")
 
     behaviors = regress_covariates_from_behavior(behaviors, covariates)
     print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
-    output_folder = f"outputs/{symptom}_{n_permutations}_results_{get_current_datetime_for_filename()}"
-    output_folder = Path(output_folder)
-    Path(output_folder).mkdir(parents=True, exist_ok=True)
 
     min_patient_count, features, masker = filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_vector,output_folder)
     print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
