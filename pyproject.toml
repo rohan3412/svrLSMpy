@@ -25,8 +25,9 @@ dependencies = [
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["svrLSMpy"] 
+[tool.setuptools.packages.find]
+include = ["svrLSMpy*"]
 
 [tool.setuptools.package-data]
-"svrLSMpy.resources" = ["*"]
+"svrLSMpy.resources" = ["*.nii.gz"]
+
