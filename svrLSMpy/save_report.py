@@ -6,6 +6,10 @@ import base64
 
 from .plot_mosaics import get_axial_slices, get_coronal_slices, get_sagittal_slices, save_axial_mosaic, save_coronal_mosaic, save_sagittal_mosaic
 
+from importlib.resources import files
+bg_img_path = files("svrLSMpy.resources").joinpath("mni152.nii.gz")
+bg_img = str(bg_img_path)  # Nilearn expects a string path
+
 def save_report(output_file, svr_params, behaviour_name, n_permutations, alpha, zmap_range, zmap, min_patient_count,num_patients, num_slices, nifti_zmap, zmap_atlas_output_dir, time_taken, num_lesions, mean_lesion_volume, n_clusters=5):
     """
     Save a comprehensive report of the LSM analysis, including parameters, significant voxels, and visualization.
@@ -52,7 +56,7 @@ def save_report(output_file, svr_params, behaviour_name, n_permutations, alpha, 
 
     zmap_threshold_output_folder = output_folder / "thresholded_zmaps"
 
-    html_view = view_img(output_folder/"zmap.nii.gz",threshold=1.7,black_bg=False,cmap="jet")
+    html_view = view_img(output_folder/"zmap.nii.gz", bg_img=bg_img, threshold=1.7, black_bg=False, cmap="jet")
 
     lesion_overlap_path = output_folder / "lesion_overlap.nii.gz"
     lesion_overlap_filtered_path = output_folder / "lesion_overlap_filtered.nii.gz"
