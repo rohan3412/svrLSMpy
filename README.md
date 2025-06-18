@@ -20,5 +20,6 @@ run_svr_lsm_iteration(
 ```
 
 Example output:
+
 ![Screenshot 1](outputs/report_screenshot_1.PNG)
 ![Screenshot 2](outputs/report_screenshot_2.PNG)
