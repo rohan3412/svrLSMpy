@@ -3,6 +3,10 @@ import numpy as np
 import nibabel as nib
 from nilearn.plotting import plot_img
 
+from importlib.resources import files
+bg_img_path = files("svrLSMpy.resources").joinpath("mni152.nii.gz")
+bg_img = str(bg_img_path)  # Nilearn expects a string path
+
 
 def get_axial_slices(nii_file_path, num_slices):
     """
@@ -48,12 +52,8 @@ def get_axial_slices(nii_file_path, num_slices):
 
 def save_axial_mosaic(nii_file_path, cut_coords, output_image_path):
     img = load_img(nii_file_path)
-    plot_img(img, cut_coords, output_image_path, display_mode="z", threshold=0, bg_img="resources/mni152.nii.gz", black_bg=False,colorbar="True", cmap="jet")
+    plot_img(img, cut_coords, output_image_path, display_mode="z", threshold=0, bg_img=bg_img, black_bg=False,colorbar="True", cmap="jet")
 
-import numpy as np
-import nibabel as nib
-from nilearn import plotting
-from nilearn.image import load_img
 
 def get_coronal_slices(nii_file_path, num_slices):
     """
@@ -106,7 +106,7 @@ def save_coronal_mosaic(nii_file_path, cut_coords, output_image_path):
     :param output_image_path: Path to save the output image.
     """
     img = load_img(nii_file_path)
-    plotting.plot_img(img, cut_coords, output_image_path, display_mode="y", threshold=0, bg_img="resources/mni152.nii.gz", black_bg=False, colorbar=True, cmap="jet")
+    plotting.plot_img(img, cut_coords, output_image_path, display_mode="y", threshold=0, bg_img=bg_img, black_bg=False, colorbar=True, cmap="jet")
 
 
 def get_sagittal_slices(nii_file_path, num_slices):
@@ -160,7 +160,7 @@ def save_sagittal_mosaic(nii_file_path, cut_coords, output_image_path):
     :param output_image_path: Path to save the output image.
     """
     img = load_img(nii_file_path)
-    plotting.plot_img(img, cut_coords, output_image_path, display_mode="x", threshold=0, bg_img="resources/mni152.nii.gz", black_bg=False, colorbar=True, cmap="jet")
+    plotting.plot_img(img, cut_coords, output_image_path, display_mode="x", threshold=0, bg_img=bg_img, black_bg=False, colorbar=True, cmap="jet")
 
 
 '''
