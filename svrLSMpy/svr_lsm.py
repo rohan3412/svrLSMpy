@@ -8,16 +8,15 @@ from itertools import product
 import pickle
 from sklearn.utils import shuffle
 from sklearn.metrics import mean_squared_error
-
 from nilearn.image import threshold_img
-
 import matplotlib.pyplot as plt
 from pathlib import Path
-
 from scipy.stats import norm
 import time
-
 from tqdm import tqdm
+
+import warnings
+warnings.filterwarnings("ignore")
 
 from .util import easy_time
 
@@ -130,6 +129,7 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
         permute_time = time.time()
 
         # Wrap the range with tqdm to show the progress bar
+        time.sleep(1)
         with tqdm(range(n_permutations), desc="Running permutations", unit="permutation", mininterval=1, ncols=100, dynamic_ncols=True, leave=True) as pbar:
             for i in pbar:
                 # Shuffle the behaviors for this permutation
