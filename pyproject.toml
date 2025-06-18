@@ -21,9 +21,12 @@ dependencies = [
   "atlasreader"
 ]
 
-# Standard library modules like os, csv, json, time, datetime, itertools, pathlib, pickle, base64
-# do NOT need to be included — they are part of Python itself.
-
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["svrLSMpy"] 
+
+[tool.setuptools.package-data]
+"svrLSMpy.resources" = ["*"]
