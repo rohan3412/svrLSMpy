@@ -1,0 +1,29 @@
+[project]
+name = "svrLSMpy"
+version = "0.1.0"
+description = "SVR-based Lesion-Symptom Mapping Toolkit with visualization and automated reporting"
+authors = [
+  { name = "Rohan Jepegnanam", email = "rohantjepegnanam@email.com" }
+]
+readme = "README.md"
+requires-python = ">=3.7"
+
+dependencies = [
+  "nilearn",
+  "nibabel",
+  "pandas",
+  "numpy",
+  "scikit-learn",
+  "statsmodels",
+  "matplotlib",
+  "scipy",
+  "tqdm",
+  "atlasreader"
+]
+
+# Standard library modules like os, csv, json, time, datetime, itertools, pathlib, pickle, base64
+# do NOT need to be included — they are part of Python itself.
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
