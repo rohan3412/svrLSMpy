@@ -19,7 +19,7 @@ import time
 
 from tqdm import tqdm
 
-from modules.time_func import easy_time
+from .util import easy_time
 
 
 def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutations=1, alpha=0.05, n_splits=5):
