@@ -4,7 +4,7 @@ from .run_svr_lsm_iteration import run_svr_lsm_iteration
 
 def run_example():
     base_folder = Path.cwd() / "symptoms"
-
+    output_path = Path.cwd() / "output"
     symptom_folder = base_folder / 'VAST'
     csv_name = "VAST_Data_Fluency.csv"
 
@@ -18,6 +18,7 @@ def run_example():
     run_svr_lsm_iteration(
         symptom_folder=symptom_folder,
         csv_name=csv_name,
+        output_path=output_path,
         behaviour_name=behaviour_name,
         normalize_vector=True,
         do_regress_out_lesion_volume=True,
