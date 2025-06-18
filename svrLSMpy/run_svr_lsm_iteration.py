@@ -1,11 +1,11 @@
-from modules.atlas_read_cluster import atlas_read_cluster
-from modules.time_func import get_current_datetime_for_filename
-from modules.time_func import easy_time
-from modules.load_lesions_and_behaviors import load_lesions_and_behaviors
-from modules.filter_voxels_by_patient_count import filter_voxels_by_patient_count
-from modules.regress_covariates_from_behavior import regress_covariates_from_behavior
-from modules.svr_lsm import svr_lsm
-from modules.save_report import save_report
+from .atlas_read_cluster import atlas_read_cluster
+from .time_func import get_current_datetime_for_filename
+from .time_func import easy_time
+from .load_lesions_and_behaviors import load_lesions_and_behaviors
+from .filter_voxels_by_patient_count import filter_voxels_by_patient_count
+from .regress_covariates_from_behavior import regress_covariates_from_behavior
+from .svr_lsm import svr_lsm
+from .save_report import save_report
 
 import time
 from pathlib import Path
