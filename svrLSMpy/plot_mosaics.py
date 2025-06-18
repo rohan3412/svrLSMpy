@@ -106,7 +106,7 @@ def save_coronal_mosaic(nii_file_path, cut_coords, output_image_path):
     :param output_image_path: Path to save the output image.
     """
     img = load_img(nii_file_path)
-    plotting.plot_img(img, cut_coords, output_image_path, display_mode="y", threshold=0, bg_img=bg_img, black_bg=False, colorbar=True, cmap="jet")
+    plot_img(img, cut_coords, output_image_path, display_mode="y", threshold=0, bg_img=bg_img, black_bg=False, colorbar=True, cmap="jet")
 
 
 def get_sagittal_slices(nii_file_path, num_slices):
@@ -160,7 +160,7 @@ def save_sagittal_mosaic(nii_file_path, cut_coords, output_image_path):
     :param output_image_path: Path to save the output image.
     """
     img = load_img(nii_file_path)
-    plotting.plot_img(img, cut_coords, output_image_path, display_mode="x", threshold=0, bg_img=bg_img, black_bg=False, colorbar=True, cmap="jet")
+    plot_img(img, cut_coords, output_image_path, display_mode="x", threshold=0, bg_img=bg_img, black_bg=False, colorbar=True, cmap="jet")
 
 
 '''
