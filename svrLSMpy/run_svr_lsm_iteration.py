@@ -1,6 +1,5 @@
 from .atlas_read_cluster import atlas_read_cluster
-from .time_func import get_current_datetime_for_filename
-from .time_func import easy_time
+from .util import get_current_datetime_for_filename, easy_time
 from .load_lesions_and_behaviors import load_lesions_and_behaviors
 from .filter_voxels_by_patient_count import filter_voxels_by_patient_count
 from .regress_covariates_from_behavior import regress_covariates_from_behavior
