@@ -12,11 +12,12 @@ import numpy as np
 
 def run_svr_lsm_iteration(symptom_folder,
                           csv_path,
+                          max_score,
                           output_path,
                           behaviour_name="behavioural_deficit",
-                          do_regress_out_lesion_volume=True, 
-                          normalize_vector=True, 
-                          max_score=100,
+                          do_regress_out_lesion_volume=True,
+                          do_regress_out_covariates=False,
+                          normalize_vector=True,
                           min_patient_count='10%', 
                           param_grid = {
                                         'C': [50, 40, 30, 20, 10, 5],
@@ -29,18 +30,18 @@ def run_svr_lsm_iteration(symptom_folder,
                           num_slices=7):
     # base_folder = Path.cwd()  # CURRENT DIRECTORY
     start_time = time.time()
-    
+
+    symptom = behaviour_name
     output_folder = f"{output_path}/{symptom}_{n_permutations}_results_{get_current_datetime_for_filename()}"
     output_folder = Path(output_folder)
                               
     Path(output_folder).mkdir(parents=True, exist_ok=True)
     #Make folder to save all results
-    symptom = behaviour_name
 
     # Load lesions and behaviors
-    lesion_folder = symptom_folder / 'data'
+    lesion_folder = Path(symptom_folder)
 
-    lesion_files, behaviors, covariates, lesion_volumes = load_lesions_and_behaviors(lesion_folder, csv_path, max_score, do_regress_out_lesion_volume, output_folder)
+    lesion_files, behaviors, covariates, lesion_volumes = load_lesions_and_behaviors(lesion_folder, csv_path, max_score, do_regress_out_lesion_volume, do_regress_out_covariates)
     print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)),end="\n\n")
 
     behaviors = regress_covariates_from_behavior(behaviors, covariates)
