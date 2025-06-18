@@ -4,7 +4,7 @@ import pandas as pd
 import nibabel as nib
 import base64
 
-from modules.plot_mosaics import get_axial_slices, get_coronal_slices, get_sagittal_slices, save_axial_mosaic, save_coronal_mosaic, save_sagittal_mosaic
+from .plot_mosaics import get_axial_slices, get_coronal_slices, get_sagittal_slices, save_axial_mosaic, save_coronal_mosaic, save_sagittal_mosaic
 
 def save_report(output_file, svr_params, behaviour_name, n_permutations, alpha, zmap_range, zmap, min_patient_count,num_patients, num_slices, nifti_zmap, zmap_atlas_output_dir, time_taken, num_lesions, mean_lesion_volume, n_clusters=5):
     """
