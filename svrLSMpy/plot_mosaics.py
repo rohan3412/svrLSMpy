@@ -52,7 +52,7 @@ def get_axial_slices(nii_file_path, num_slices):
 
 def save_axial_mosaic(nii_file_path, cut_coords, output_image_path):
     img = load_img(nii_file_path)
-    plot_img(img, cut_coords, output_image_path, display_mode="z", threshold=0, bg_img=bg_img, black_bg=False,colorbar="True", cmap="jet")
+    plot_img(img, cut_coords, output_image_path, display_mode="z", threshold=0, bg_img=bg_img, black_bg=False,colorbar=True, cmap="jet")
 
 
 def get_coronal_slices(nii_file_path, num_slices):
