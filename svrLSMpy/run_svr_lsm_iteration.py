@@ -3,6 +3,7 @@ from .util import get_current_datetime_for_filename, easy_time
 from .load_lesions_and_behaviors import load_lesions_and_behaviors
 from .filter_voxels_by_patient_count import filter_voxels_by_patient_count
 from .regress_covariates_from_behavior import regress_covariates_from_behavior
+from .regress_covariates_from_lesions import regress_covariates_from_lesions
 from .svr_lsm import svr_lsm
 from .save_report import save_report
 
@@ -48,8 +49,12 @@ def run_svr_lsm_iteration(symptom_folder,
     behaviors = regress_covariates_from_behavior(behaviors, covariates)
     print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
 
-    min_patient_count, features, masker = filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_vector,output_folder)
+    min_patient_count, features, masker = filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_vector, output_folder)
     print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
+
+    features = regress_covariates_from_lesions(features, covariates)
+    print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
+
     # Perform SVR-based lesion-symptom mapping
     svr_params, coef_map, nifti_zmap, zmap = svr_lsm(features=features,
                                                       behaviors=behaviors,
