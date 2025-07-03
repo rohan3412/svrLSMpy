@@ -19,9 +19,8 @@ def run_svr_lsm_iteration(symptom_folder,
                           behaviour_name="behavioural_deficit",
                           regress_out_lesion_volume=True,
                           regress_out_covariates_on_scores=False,
-                          regress_out_covariates_on_lesions=False
+                          regress_out_covariates_on_lesions=False,
                           normalize_vector=True,
-                          
                           min_patient_count='10%', 
                           param_grid = {
                                         'C': [50, 40, 30, 20, 10, 5],
