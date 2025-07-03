@@ -17,9 +17,11 @@ def run_svr_lsm_iteration(symptom_folder,
                           max_score,
                           output_path,
                           behaviour_name="behavioural_deficit",
-                          do_regress_out_lesion_volume=True,
-                          do_regress_out_covariates=False,
+                          regress_out_lesion_volume=True,
+                          regress_out_covariates_on_scores=False,
+                          regress_out_covariates_on_lesions=False
                           normalize_vector=True,
+                          
                           min_patient_count='10%', 
                           param_grid = {
                                         'C': [50, 40, 30, 20, 10, 5],
@@ -43,17 +45,19 @@ def run_svr_lsm_iteration(symptom_folder,
     # Load lesions and behaviors
     lesion_folder = Path(symptom_folder)
 
-    lesion_files, behaviors, covariates, lesion_volumes = load_lesions_and_behaviors(lesion_folder, csv_path, max_score, do_regress_out_lesion_volume, do_regress_out_covariates)
+    lesion_files, behaviors, covariates, lesion_volumes = load_lesions_and_behaviors(lesion_folder, csv_path, max_score, regress_out_lesion_volume, regress_out_covariates_on_scores)
     print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)),end="\n\n")
 
-    behaviors = regress_covariates_from_behavior(behaviors, covariates)
-    print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
+    if regress_out_covariates_on_scores:
+        behaviors = regress_covariates_from_behavior(behaviors, covariates)
+        print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
 
     min_patient_count, features, masker = filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_vector, output_folder)
     print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
 
-    features = regress_covariates_from_lesions(features, covariates)
-    print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
+    if regress_out_covariates_on_lesions:
+        features = regress_covariates_from_lesions(features, covariates)
+        print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
 
     # Perform SVR-based lesion-symptom mapping
     svr_params, coef_map, nifti_zmap, zmap = svr_lsm(features=features,
