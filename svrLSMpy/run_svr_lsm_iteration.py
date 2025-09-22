@@ -106,6 +106,11 @@ def run_svr_lsm_iteration(symptom_folder,
                 zmap_atlas_output_dir,
                 time_taken,
                 num_lesions,
-                mean_lesion_volume)
+                mean_lesion_volume,
+                regress_out_lesion_volume,
+                regress_out_covariates_on_scores,
+                regress_out_covariates_on_lesions,
+                normalize_vector)
 
     print("\n\tTOTAL TIME TAKEN : ", easy_time(int(time.time() - start_time)))
+
