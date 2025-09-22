@@ -1,9 +1,13 @@
-from nilearn.image import load_img
 import numpy as np
 import nibabel as nib
+from nilearn.image import load_img
 from nilearn.plotting import plot_img
 
-from importlib.resources import files
+try:
+    from importlib.resources import files
+except ImportError:
+    from importlib_resources import files
+
 bg_img_path = files("svrLSMpy.resources").joinpath("mni152.nii.gz")
 bg_img = str(bg_img_path)  # Nilearn expects a string path
 
@@ -172,3 +176,4 @@ num_slices = 10
 cut_coords = get_axial_slices(nii_file_path, num_slices)
 save_axial_mosaic(nii_file_path,cut_coords,output_image_path)
 '''
+
