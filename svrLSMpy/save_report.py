@@ -1,12 +1,16 @@
-from nilearn.plotting import view_img
-from pathlib import Path
 import pandas as pd
 import nibabel as nib
+from nilearn.plotting import view_img
+from pathlib import Path
 import base64
 
 from .plot_mosaics import get_axial_slices, get_coronal_slices, get_sagittal_slices, save_axial_mosaic, save_coronal_mosaic, save_sagittal_mosaic
 
-from importlib.resources import files
+try:
+    from importlib.resources import files
+except ImportError:
+    from importlib_resources import files
+  
 bg_img_path = files("svrLSMpy.resources").joinpath("mni152.nii.gz")
 bg_img = str(bg_img_path)  # Nilearn expects a string path
 
@@ -686,6 +690,7 @@ def save_report(output_file,
         """)
 
     print(f"Report successfully saved to {output_file}.")
+
 
 
 
