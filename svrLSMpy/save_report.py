@@ -10,7 +10,27 @@ from importlib.resources import files
 bg_img_path = files("svrLSMpy.resources").joinpath("mni152.nii.gz")
 bg_img = str(bg_img_path)  # Nilearn expects a string path
 
-def save_report(output_file, svr_params, behaviour_name, n_permutations, alpha, zmap_range, zmap, min_patient_count,num_patients, num_slices, nifti_zmap, zmap_atlas_output_dir, time_taken, num_lesions, mean_lesion_volume, n_clusters=5):
+def save_report(output_file,
+                svr_params,
+                behaviour_name,
+                n_permutations,
+                alpha,
+                zmap_range,
+                zmap,
+                min_patient_count,
+                num_patients,
+                num_slices,
+                nifti_zmap,
+                zmap_atlas_output_dir,
+                time_taken,
+                num_lesions,
+                mean_lesion_volume,
+                covariates,
+                regress_out_lesion_volume,
+                regress_out_covariates_on_scores,
+                regress_out_covariates_on_lesions,
+                normalize_vector, 
+                n_clusters=5):
     """
     Save a comprehensive report of the LSM analysis, including parameters, significant voxels, and visualization.
     """
@@ -392,8 +412,49 @@ def save_report(output_file, svr_params, behaviour_name, n_permutations, alpha, 
 
             <div class="section">
                 <h2>Methodology</h2>
-                <p>This report is an analysis of the relationship between lesion status and the behavioral score {behaviour_name}; performing lesion-symptom mapping using support vector regression. {num_patients} binary lesion files in MNI space were analyzed, including only voxels with at least {min_patient_count} overlapping lesions. Lesion volume was controlled using vector normalization. Covariates were regressed out of the behavioral scores. Support Vector Regression (SVR) was applied with parameters gamma = {svr_params['gamma']}, cost = {svr_params['C']}, and epsilon = {svr_params['epsilon']}, employing grid search optimization. Z maps were derived from on null distributions based on {n_permutations} permutations. The analysis was completed within {time_taken}. </p>
-
+                <p>This report analyzes the relationship between lesion status and the behavioral score '{behaviour_name}' using support vector regression for lesion-symptom mapping. {num_patients} binary lesion files in MNI space were analyzed, including only voxels with at least {min_patient_count} overlapping lesions. 
+                    {"Lesion volume was controlled using vector normalization." if normalize_vector else "Vector normalization of lesion data was not applied."}
+                    
+                    {(
+                        f"Covariates were included: {', '.join(covariates.columns)}. "
+                        + (
+                            "Covariates were regressed out of the behavioral scores. "
+                            if regress_out_covariates_on_scores else 
+                            "Covariates were not regressed out of the behavioral scores. "
+                        )
+                        + (
+                            "Covariates were regressed out of the lesion data. "
+                            if regress_out_covariates_on_lesions else 
+                            "Covariates were not regressed out of the lesion data. "
+                        )
+                        + (
+                            "Lesion volume was included as a covariate."
+                            if regress_out_lesion_volume else 
+                            "Lesion volume was not included as a covariate."
+                        )
+                    ) if covariates is not None else (
+                        (
+                            "Regression on behavioral scores was attempted, but no covariates were present. "
+                            if regress_out_covariates_on_scores else 
+                            "Covariates were not regressed out of the behavioral scores (no covariates present). "
+                        )
+                        + (
+                            "Regression on lesion data was attempted, but no covariates were present."
+                            if regress_out_covariates_on_lesions else 
+                            "Covariates were not regressed out of the lesion data (no covariates present)."
+                        )
+                        + (
+                            " Lesion volume was included as a covariate."
+                            if regress_out_lesion_volume else 
+                            " Lesion volume was not included as a covariate."
+                        )
+                    )}
+                    
+                    Support Vector Regression (SVR) was applied with parameters gamma = {svr_params['gamma']}, cost = {svr_params['C']}, and epsilon = {svr_params['epsilon']}, employing grid search optimization. 
+                    Z maps were derived from null distributions based on {n_permutations} permutations. 
+                    
+                    The analysis was completed in {time_taken}.
+                    </p>
             </div>
 
             <div class="section highlight">
@@ -625,5 +686,6 @@ def save_report(output_file, svr_params, behaviour_name, n_permutations, alpha, 
         """)
 
     print(f"Report successfully saved to {output_file}.")
+
 
 
