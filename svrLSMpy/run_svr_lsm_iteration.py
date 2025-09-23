@@ -76,12 +76,6 @@ def run_svr_lsm_iteration(symptom_folder,
     num_patients = len(behaviors)
     mean_lesion_volume = np.mean(lesion_volumes)
 
-    # Check for covariate information
-    if covariates is not None:
-        covariate_info = f"{covariates.shape[1]} additional covariates"
-    else:
-        covariate_info = None
-
     # Compute the zmap range
     zmap_range = (np.min(zmap), np.max(zmap))
 
@@ -93,7 +87,13 @@ def run_svr_lsm_iteration(symptom_folder,
 
     time_taken = easy_time(time.time() - start_time)
 
-
+  
+    # Print for covariate information
+    if covariates is None:
+        print(f"Covariates is None")
+    else:
+        print(f"Covariates={Covariates}")
+      
     # Save the report
     save_report(svr_lsm_report_path,
                 svr_params,
@@ -117,5 +117,6 @@ def run_svr_lsm_iteration(symptom_folder,
                 normalize_vector)
 
     print("\n\tTOTAL TIME TAKEN : ", easy_time(int(time.time() - start_time)))
+
 
 
