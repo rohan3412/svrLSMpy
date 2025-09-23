@@ -420,8 +420,7 @@ def save_report(output_file,
                     {"Lesion volume was controlled using vector normalization." if normalize_vector else "Vector normalization of lesion data was not applied."}
                     
                     {(
-                        f"Covariates were included: {', '.join(covariates.columns)}. "
-                        + (
+                        (
                             "Covariates were regressed out of the behavioral scores. "
                             if regress_out_covariates_on_scores else 
                             "Covariates were not regressed out of the behavioral scores. "
@@ -690,6 +689,7 @@ def save_report(output_file,
         """)
 
     print(f"Report successfully saved to {output_file}.")
+
 
 
 
