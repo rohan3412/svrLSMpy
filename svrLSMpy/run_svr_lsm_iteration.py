@@ -90,9 +90,9 @@ def run_svr_lsm_iteration(symptom_folder,
   
     # Print for covariate information
     if covariates is None:
-        print(f"Covariates is None")
+        print(f"covariates is None")
     else:
-        print(f"Covariates={Covariates}")
+        print(f"covariates={covariates}")
       
     # Save the report
     save_report(svr_lsm_report_path,
@@ -117,6 +117,7 @@ def run_svr_lsm_iteration(symptom_folder,
                 normalize_vector)
 
     print("\n\tTOTAL TIME TAKEN : ", easy_time(int(time.time() - start_time)))
+
 
 
 
