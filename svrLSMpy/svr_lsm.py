@@ -173,22 +173,23 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
     num_permutations = 0
 
     with open(results_file, 'rb') as f:
+        pbar = tqdm()  # No total specified
         while True:
             try:
-                # Load one result at a time
                 perm_result = pickle.load(f)
-
-                # Initialize accumulators on the first iteration
+    
                 if sum_null is None:
                     sum_null = np.zeros_like(perm_result)
                     sum_null_squared = np.zeros_like(perm_result)
-
-                # Update sum and sum of squares
+    
                 sum_null += perm_result
                 sum_null_squared += perm_result ** 2
                 num_permutations += 1
+    
+                pbar.update(1)  # Update progress bar by 1
             except EOFError:
                 break
+        pbar.close()
 
     # Compute mean and standard deviation
     mean_null = sum_null / num_permutations
@@ -252,5 +253,6 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
         nib.save(nifti_zmap_thresh, zmap_threshold_output_folder / f'zmap_{label}.nii.gz')
 
     return best_params, coef_map, nifti_zmap, zmap
+
 
 
