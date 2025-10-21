@@ -58,8 +58,19 @@ def run_svr_lsm_iteration(symptom_folder,
             print("covariates not regressed from behavioral score")
       
         if regress_out_covariates_on_lesions:
-            features = regress_covariates_from_lesions(features, covariates)
-            print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
+            non_regressed_features = features
+            try:
+                print("Running... Press Ctrl+C to stop")
+                features = regress_covariates_from_lesions(features, covariates)
+                print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
+                  
+            except KeyboardInterrupt:
+                print("Lesion file covariate regression cancelled by user!")
+                regress_out_covariates_on_lesions = False
+                features = non_regressed_features
+
+
+          
         else:
             print("covariates not regressed from lesion file")
     else:
@@ -121,6 +132,7 @@ def run_svr_lsm_iteration(symptom_folder,
                 normalize_vector)
 
     print("\n\tTOTAL TIME TAKEN : ", easy_time(int(time.time() - start_time)))
+
 
 
 
