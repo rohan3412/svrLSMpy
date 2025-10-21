@@ -25,7 +25,7 @@ def run_svr_lsm_iteration(symptom_folder,
                           param_grid = {
                                         'C': [50, 40, 30, 20, 10, 5],
                                         'gamma': [10, 5, 4, 3, 2, 1],
-                                        'epsilon': [0.1]
+                                        'epsilon': [0.1, 0.05, 0.01]
                                         },
                           n_permutations=1000, 
                           alpha=0.05, 
@@ -117,6 +117,7 @@ def run_svr_lsm_iteration(symptom_folder,
                 normalize_vector)
 
     print("\n\tTOTAL TIME TAKEN : ", easy_time(int(time.time() - start_time)))
+
 
 
 
