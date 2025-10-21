@@ -105,7 +105,7 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
     print(f"Results and scores saved to {output_path}")
     del df
 
-    print(f"Best parameters found: {best_params} with score {best_score:.4f} in iteration {best_iteration}/{num_iter}")
+    print(f"\nBest parameters found: {best_params} with score {best_score:.4f} in iteration {best_iteration}/{num_iter}")
     # Train SVR with the best parameters
     svr_best = SVR(kernel='rbf', C=best_params['C'], gamma=best_params['gamma'], epsilon=best_params['epsilon'])
     svr_best.fit(features, behaviors)
@@ -255,6 +255,7 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
         nib.save(nifti_zmap_thresh, zmap_threshold_output_folder / f'zmap_{label}.nii.gz')
 
     return best_params, coef_map, nifti_zmap, zmap
+
 
 
 
