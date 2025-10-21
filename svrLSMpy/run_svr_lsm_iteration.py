@@ -54,10 +54,14 @@ def run_svr_lsm_iteration(symptom_folder,
         if regress_out_covariates_on_scores:
             behaviors = regress_covariates_from_behavior(behaviors, covariates)
             print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
+        else:
+            print("covariates not regressed from behavioral score")
       
         if regress_out_covariates_on_lesions:
             features = regress_covariates_from_lesions(features, covariates)
             print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
+        else:
+            print("covariates not regressed from lesion file")
     else:
         print("\n\nNo covariates present\n\n")
 
@@ -117,6 +121,7 @@ def run_svr_lsm_iteration(symptom_folder,
                 normalize_vector)
 
     print("\n\tTOTAL TIME TAKEN : ", easy_time(int(time.time() - start_time)))
+
 
 
 
