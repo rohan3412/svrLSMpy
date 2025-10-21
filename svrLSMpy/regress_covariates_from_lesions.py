@@ -7,8 +7,6 @@ def regress_covariates_from_lesions(features, covariates):
         print('NO covariates to regress from lesion data')
         return features
 
-    print("Regressing covariates out of lesion data...")
-
     # Initialize output array
     residualized_features = np.zeros_like(features)
 
@@ -16,7 +14,7 @@ def regress_covariates_from_lesions(features, covariates):
     n_voxels = features.shape[1]
     lr = LinearRegression()
 
-    for voxel_idx in tqdm(range(n_voxels), desc="Regressing covariates from voxels"):
+    for voxel_idx in tqdm(range(n_voxels), desc="Regressing covariates out of lesion data..."):
         voxel_values = features[:, voxel_idx]
 
         # Fit linear regression: voxel_values ~ covariates
@@ -29,4 +27,5 @@ def regress_covariates_from_lesions(features, covariates):
         residualized_features[:, voxel_idx] = residuals
 
     print(f"Regressed covariates from {n_voxels} voxels")
+
     return residualized_features
