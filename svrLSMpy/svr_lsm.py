@@ -44,17 +44,15 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
     i = 1
     num_iter = len(param_combinations)
 
-    for C, gamma, epsilon in param_combinations:
-        print(f"\nIteration: i={i}/{num_iter}, Testing parameters: C={C}, gamma={gamma}, epsilon={epsilon}")
+    for idx, (C, gamma, epsilon) in enumerate(param_combinations, 1):
+        print(f"\nIteration: {idx}/{num_iter}, Testing parameters: C={C}, gamma={gamma}, epsilon={epsilon}")
         iter_time = time.time()
 
         scores = []
         no_of_sv = []
 
-        split_ctr = 1
-        for train_idx, test_idx in cv.split(features):
-            print(f"Split :{split_ctr}/{n_splits}")
-            split_ctr += 1
+        for fold_idx, (train_idx, test_idx) in enumerate(cv.split(features), 1):
+            print(f"Split :{fold_idx}/{n_splits}")
             X_train, X_test = features[train_idx], features[test_idx]
             y_train, y_test = behaviors[train_idx], behaviors[test_idx]
 
@@ -200,7 +198,8 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
     nifti_null_path = output_folder / 'null_map.nii.gz'
     nib.save(nifti_null_map, nifti_null_path)
 
-    std_null = np.sqrt((sum_null_squared / num_permutations) - mean_null ** 2 + 1e-8)
+    variance = (sum_null_squared / num_permutations) - (mean_null ** 2)
+    std_null = np.sqrt(np.maximum(variance, 0) + 1e-8)
 
     # Compute z-map
     zmap = (coef_map - mean_null) / std_null
@@ -240,25 +239,18 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
     nifti_zmap_path = output_folder / 'zmap.nii.gz'
     nib.save(nifti_zmap, nifti_zmap_path)
 
-    nifti_zmap_p05 = threshold_img(nifti_zmap,threshold=1.644854,cluster_threshold=30)
-    print("Thresholding z-map at p<0.05...")
-    nifti_zmap_thresholded_path = zmap_threshold_output_folder / 'zmap_p05.nii.gz'
-    nib.save(nifti_zmap_p05, nifti_zmap_thresholded_path)
-
-    nifti_zmap_p01 = threshold_img(nifti_zmap, threshold=2.326348, cluster_threshold=30)
-    print("Thresholding z-map at p<0.01...")
-    nifti_zmap_thresholded_path = zmap_threshold_output_folder / 'zmap_p01.nii.gz'
-    nib.save(nifti_zmap_p01, nifti_zmap_thresholded_path)
-
-    nifti_zmap_p005 = threshold_img(nifti_zmap, threshold=2.575829, cluster_threshold=30)
-    print("Thresholding z-map at p<0.005...")
-    nifti_zmap_thresholded_path = zmap_threshold_output_folder / 'zmap_p005.nii.gz'
-    nib.save(nifti_zmap_p005, nifti_zmap_thresholded_path)
-
-    nifti_zmap_p001 = threshold_img(nifti_zmap, threshold=3.090232, cluster_threshold=30)
-    print("Thresholding z-map at p<0.001...")
-    nifti_zmap_thresholded_path = zmap_threshold_output_folder / 'zmap_p001.nii.gz'
-    nib.save(nifti_zmap_p001, nifti_zmap_thresholded_path)
+    thresholds = [
+        (1.644854, 'p05', 'p<0.05'),
+        (2.326348, 'p01', 'p<0.01'),
+        (2.575829, 'p005', 'p<0.005'),
+        (3.090232, 'p001', 'p<0.001')
+    ]
+    
+    for thresh_val, label, desc in thresholds:
+        print(f"Thresholding z-map at {desc}...")
+        nifti_zmap_thresh = threshold_img(nifti_zmap, threshold=thresh_val, cluster_threshold=30)
+        nib.save(nifti_zmap_thresh, zmap_threshold_output_folder / f'zmap_{label}.nii.gz')
 
     return best_params, coef_map, nifti_zmap, zmap
+
 
