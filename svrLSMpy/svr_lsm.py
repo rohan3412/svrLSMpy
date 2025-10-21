@@ -111,17 +111,18 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
     svr_best.fit(features, behaviors)
     coef_map = svr_best.support_vectors_.mean(axis=0)
 
-    
     #save model for later predictions
     model_path = output_folder / 'svr_model.pkl'
+    save_time = time.time()
     with open(model_path, 'wb') as f:
         pickle.dump(svr_best, f)
-    print(f"Trained SVR model saved to {model_path}")
+    print(f"Trained SVR model saved to {model_path}, in {easy_time(int(time.time() - save_time)}")
     
     masker_path = output_folder / 'masker.pkl'
+    save_time = time.time()
     with open(masker_path, 'wb') as f:
         pickle.dump(masker, f)
-    print(f"Masker saved to {masker_path}")
+    print(f"Masker saved to {masker_path}, in {easy_time(int(time.time() - save_time)}")
 
     
     #saving beta map
@@ -255,6 +256,7 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
         nib.save(nifti_zmap_thresh, zmap_threshold_output_folder / f'zmap_{label}.nii.gz')
 
     return best_params, coef_map, nifti_zmap, zmap
+
 
 
 
