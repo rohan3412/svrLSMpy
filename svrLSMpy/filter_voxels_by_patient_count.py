@@ -27,9 +27,9 @@ def filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_ve
     else:
         print("Filtering is not done")
 
-    lesion_imgs = [nib.load(f) for f in lesion_files]
+    lesion_imgs = [nib.load(f) for f in tqdm(lesion_files, desc="Loading lesion images")]
     masker = masking.compute_brain_mask(lesion_imgs[0])
-    lesion_data = [masking.apply_mask(img, masker) for img in lesion_imgs]
+    lesion_data = [masking.apply_mask(img, masker) for img in tqdm(lesion_imgs, desc="Applying mask to lesion images")]
 
     # Stack the vectorized lesion data
     lesion_data_stack = np.vstack(lesion_data)
@@ -58,5 +58,6 @@ def filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_ve
         lesion_data_prepared = normalize(lesion_data_prepared, norm='l2', axis=1)
 
     return min_patient_count,lesion_data_prepared, masker
+
 
 
