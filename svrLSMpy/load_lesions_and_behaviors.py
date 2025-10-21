@@ -3,6 +3,7 @@ from pandas import read_csv
 import numpy as np
 import nibabel as nib
 import os
+from tqdm import tqdm
 
 def load_lesions_and_behaviors(lesion_folder, csv_file, max_score, do_regress_out_lesion_volume, do_regress_out_covariates):
     """
@@ -28,9 +29,9 @@ def load_lesions_and_behaviors(lesion_folder, csv_file, max_score, do_regress_ou
 
     # Compute lesion volumes
 
-    print("\nComputing lesion volumes...")
+    print("\n")
     lesion_volumes = []
-    for file in lesion_files:
+    for file in tqdm(lesion_files, desc="Loading lesions and computing volumes..."):
         lesion_img = nib.load(file)
         lesion_data = lesion_img.get_fdata()
         voxel_volume = np.prod(lesion_img.header.get_zooms())
@@ -70,3 +71,4 @@ def load_lesions_and_behaviors(lesion_folder, csv_file, max_score, do_regress_ou
         covariates = scaler.fit_transform(covariates)
 
     return lesion_files, behaviors, covariates, lesion_volumes
+
