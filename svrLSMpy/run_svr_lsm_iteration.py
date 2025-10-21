@@ -66,6 +66,7 @@ def run_svr_lsm_iteration(symptom_folder,
                   
             except KeyboardInterrupt:
                 print("Lesion file covariate regression cancelled by user!")
+                print("\n"*7)
                 regress_out_covariates_on_lesions = False
                 features = non_regressed_features
 
@@ -132,6 +133,7 @@ def run_svr_lsm_iteration(symptom_folder,
                 normalize_vector)
 
     print("\n\tTOTAL TIME TAKEN : ", easy_time(int(time.time() - start_time)))
+
 
 
 
