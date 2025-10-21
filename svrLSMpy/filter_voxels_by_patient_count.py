@@ -16,7 +16,7 @@ def filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_ve
             print(f"{min_patient_count}% of {no_of_patients} patients = ",end='')
             min_patient_count = no_of_patients*min_patient_count/100
             print(min_patient_count)
-            min_patient_count = int(min_patient_count)
+            min_patient_count = round(min_patient_count)
             print("Thus,")
 
 
@@ -56,3 +56,4 @@ def filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_ve
         lesion_data_prepared = normalize(lesion_data_prepared, norm='l2', axis=1)
 
     return min_patient_count,lesion_data_prepared, masker
+
