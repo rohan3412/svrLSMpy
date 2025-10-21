@@ -176,7 +176,7 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
     num_permutations = 0
 
     with open(results_file, 'rb') as f:
-        pbar = tqdm()  # No total specified
+        pbar = tqdm(total=n_permutations, desc="Calculating mean and std. dev. ...")  # No total specified
         while True:
             try:
                 perm_result = pickle.load(f)
@@ -256,6 +256,7 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
         nib.save(nifti_zmap_thresh, zmap_threshold_output_folder / f'zmap_{label}.nii.gz')
 
     return best_params, coef_map, nifti_zmap, zmap
+
 
 
 
