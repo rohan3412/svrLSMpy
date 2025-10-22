@@ -2,8 +2,7 @@ from .atlas_read_cluster import atlas_read_cluster
 from .util import get_current_datetime_for_filename, easy_time
 from .load_lesions_and_behaviors import load_lesions_and_behaviors
 from .filter_voxels_by_patient_count import filter_voxels_by_patient_count
-from .regress_covariates_from_behavior import regress_covariates_from_behavior
-from .regress_covariates_from_lesions import regress_covariates_from_lesions
+from .regress_covariates import regress_covariates_from_behavior, regress_covariates_from_lesions
 from .svr_lsm import svr_lsm
 from .save_report import save_report
 
@@ -128,6 +127,7 @@ def run_svr_lsm_iteration(symptom_folder,
                 normalize_vector)
 
     print("\n\tTOTAL TIME TAKEN : ", easy_time(int(time.time() - start_time)))
+
 
 
 
