@@ -4,6 +4,7 @@ import numpy as np
 import nibabel as nib
 import os
 from tqdm import tqdm
+import time
 from .util import normalize_file_name
 
 def load_lesions_and_behaviors(lesion_folder, csv_file, max_score, do_regress_out_lesion_volume, do_regress_out_covariates):
@@ -22,9 +23,9 @@ def load_lesions_and_behaviors(lesion_folder, csv_file, max_score, do_regress_ou
     lesion_files = []
     
     for f in df['filename']:
-        norm_f = normalize(f)
+        norm_f = normalize_file_name(f)
         # Find all files in lesion_folder where normalized filename contains normalized f
-        matches = [file for file in os.listdir(lesion_folder) if norm_f in normalize(file)]
+        matches = [file for file in os.listdir(lesion_folder) if norm_f in normalize_file_name(file)]
     
         if len(matches) == 0:
             raise FileNotFoundError(f"No files found in '{lesion_folder}' containing '{f}' (normalized as '{norm_f}') as a substring.")
@@ -39,14 +40,11 @@ def load_lesions_and_behaviors(lesion_folder, csv_file, max_score, do_regress_ou
     behaviors = df['behavior'].values
 
     print('\nBehavior before:\n', behaviors)
-
     behaviors = behaviors / max_score
-
     print('\nBehavior after:\n', behaviors)
 
     # Compute lesion volumes
-
-    print("\n")
+    time.sleep(1)
     lesion_volumes = []
     for file in tqdm(lesion_files, desc="Loading lesions and computing volumes..."):
         lesion_img = nib.load(file)
@@ -88,6 +86,7 @@ def load_lesions_and_behaviors(lesion_folder, csv_file, max_score, do_regress_ou
         covariates = scaler.fit_transform(covariates)
 
     return lesion_files, behaviors, covariates, lesion_volumes
+
 
 
 
