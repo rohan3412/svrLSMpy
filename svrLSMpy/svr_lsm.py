@@ -136,6 +136,11 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
     null_params = best_params
 
     results_file = output_folder / "null_distributions.pkl"
+
+
+
+
+    '''
     # Open the results file in binary write mode
     with open(results_file, 'wb') as f:
         permute_time = time.time()
@@ -196,7 +201,53 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
 
     # Compute mean and standard deviation
     mean_null = sum_null / num_permutations
+    '''
 
+    """"""
+    sum_null = None
+    sum_null_squared = None
+    num_permutations = 0
+    
+    with open(results_file, 'wb') as f:
+        permute_time = time.time()
+    
+        time.sleep(1)
+        with tqdm(range(n_permutations), desc="Running permutations", unit="permutation", mininterval=1, ncols=100, dynamic_ncols=True, leave=True) as pbar:
+            for i in pbar:
+                perm_behaviors = shuffle(behaviors, random_state=None)
+    
+                svr_permutation = SVR(kernel='rbf',
+                                      C=null_params['C'],
+                                      gamma=null_params['gamma'],
+                                      epsilon=null_params['epsilon'])
+    
+                svr_permutation.fit(features, perm_behaviors)
+    
+                vector_mean = svr_permutation.support_vectors_.mean(axis=0)
+    
+                pickle.dump(vector_mean, f)
+    
+                if sum_null is None:
+                    sum_null = np.zeros_like(vector_mean)
+                    sum_null_squared = np.zeros_like(vector_mean)
+    
+                sum_null += vector_mean
+                sum_null_squared += vector_mean ** 2
+                num_permutations += 1
+    
+                del vector_mean
+    
+                elapsed_time = time.time() - permute_time
+                pbar.set_postfix(elapsed=f"{easy_time(elapsed_time)}",eta=f"{easy_time((elapsed_time / (i + 1)) * (n_permutations - i - 1))}")
+    
+    print(f"Permutations completed. Null distribution saved to {results_file}\n")
+    
+    mean_null = sum_null / num_permutations
+
+    """"""
+
+
+    
     variance = (sum_null_squared / num_permutations) - (mean_null ** 2)
     std_null = np.sqrt(np.maximum(variance, 0) + 1e-8)
     
@@ -256,6 +307,7 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
         nib.save(nifti_zmap_thresh, zmap_threshold_output_folder / f'zmap_{label}.nii.gz')
 
     return best_params, coef_map, nifti_zmap, zmap
+
 
 
 
