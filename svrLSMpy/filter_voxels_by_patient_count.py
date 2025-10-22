@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.preprocessing import normalize
 from nilearn import masking
 from tqdm import tqdm
+from nilearn.image import resample_to_img
 
 def filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_vector, output_folder):
     """
@@ -71,6 +72,7 @@ def filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_ve
         lesion_data_prepared = normalize(lesion_data_prepared, norm='l2', axis=1)
 
     return min_patient_count,lesion_data_prepared, masker
+
 
 
 
