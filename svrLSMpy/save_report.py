@@ -2,9 +2,9 @@ import pandas as pd
 import nibabel as nib
 from nilearn.plotting import view_img
 from pathlib import Path
-import base64
 
 from .plot_mosaics import get_axial_slices, get_coronal_slices, get_sagittal_slices, save_axial_mosaic, save_coronal_mosaic, save_sagittal_mosaic
+from .util import encode_image
 
 try:
     from importlib.resources import files
@@ -19,7 +19,6 @@ def save_report(output_file,
                 behaviour_name,
                 n_permutations,
                 alpha,
-                zmap_range,
                 zmap,
                 min_patient_count,
                 num_patients,
@@ -40,10 +39,9 @@ def save_report(output_file,
     """
     print("Saving report...")
 
-    def encode_image(image_path):
-        with open(image_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode('utf-8')
-
+    # Compute the zmap range
+    zmap_range = (np.min(zmap), np.max(zmap))
+                    
     atlas_reader_output_folder = Path(zmap_atlas_output_dir)
     cluster_csv_path = atlas_reader_output_folder / "atlasreader_clusters.csv"
     fileExists = False
@@ -689,6 +687,7 @@ def save_report(output_file,
         """)
 
     print(f"Report successfully saved to {output_file}.")
+
 
 
 
