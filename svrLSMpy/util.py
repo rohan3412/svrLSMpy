@@ -1,6 +1,8 @@
 from datetime import datetime
 import re
+import base64
 
+    
 def get_current_datetime_for_filename():
     now = datetime.now()
     # Format the date and time as a string, using '-' and '_' to avoid invalid file name characters
@@ -30,3 +32,8 @@ def easy_time(seconds):
 def normalize_file_name(name):
     # Lowercase, remove underscores, hyphens, and spaces
     return re.sub(r'[_\-\s]', '', name.lower())
+
+def encode_image(image_path):
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode('utf-8')
+
