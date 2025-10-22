@@ -40,8 +40,10 @@ def save_report(output_file,
     print("Saving report...")
 
     # Compute the zmap range
-    zmap_range = (np.min(zmap), np.max(zmap))
-                    
+    zmap_min, zmap_max = (np.min(zmap), np.max(zmap))
+
+    max_zscore = max(abs(zmap_min),abs(zmap_max))
+    
     atlas_reader_output_folder = Path(zmap_atlas_output_dir)
     cluster_csv_path = atlas_reader_output_folder / "atlasreader_clusters.csv"
     fileExists = False
@@ -609,7 +611,7 @@ def save_report(output_file,
                 <ul>
                     <li><strong>Mean lesion volume (in voxels):</strong> {mean_lesion_volume:.2f}</li>
                     <li><strong>Number of lesion files:</strong> {num_lesions}</li>
-                    <li><strong>Z-map value range:</strong> ({zmap_range[0]:.2f}, {zmap_range[1]:.2f})</li>
+                    <li><strong>Z-map value range:</strong> ({zmap_min:.2f}, {zmap_max:.2f})</li>
                 </ul>
             </div>
             <div id="section">
@@ -687,6 +689,7 @@ def save_report(output_file,
         """)
 
     print(f"Report successfully saved to {output_file}.")
+
 
 
 
