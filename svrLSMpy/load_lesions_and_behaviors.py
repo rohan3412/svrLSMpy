@@ -4,6 +4,7 @@ import numpy as np
 import nibabel as nib
 import os
 from tqdm import tqdm
+from .util import normalize_file_name
 
 def load_lesions_and_behaviors(lesion_folder, csv_file, max_score, do_regress_out_lesion_volume, do_regress_out_covariates):
     """
@@ -17,10 +18,6 @@ def load_lesions_and_behaviors(lesion_folder, csv_file, max_score, do_regress_ou
     for col in required_columns:
         if col not in df.columns:
             raise KeyError(f"CSV file must contain '{col}' column.")
-
-    def normalize(name):
-        # Lowercase, remove underscores, hyphens, and spaces
-        return re.sub(r'[_\-\s]', '', name.lower())
 
     lesion_files = []
     
@@ -91,6 +88,7 @@ def load_lesions_and_behaviors(lesion_folder, csv_file, max_score, do_regress_ou
         covariates = scaler.fit_transform(covariates)
 
     return lesion_files, behaviors, covariates, lesion_volumes
+
 
 
 
