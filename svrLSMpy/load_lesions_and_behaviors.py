@@ -18,14 +18,22 @@ def load_lesions_and_behaviors(lesion_folder, csv_file, max_score, do_regress_ou
         if col not in df.columns:
             raise KeyError(f"CSV file must contain '{col}' column.")
 
+    def normalize(name):
+        # Lowercase, remove underscores, hyphens, and spaces
+        return re.sub(r'[_\-\s]', '', name.lower())
+
     lesion_files = []
+    
     for f in df['filename']:
-        matches = [file for file in os.listdir(lesion_folder) if f in file]
+        norm_f = normalize(f)
+        # Find all files in lesion_folder where normalized filename contains normalized f
+        matches = [file for file in os.listdir(lesion_folder) if norm_f in normalize(file)]
+    
         if len(matches) == 0:
-            raise FileNotFoundError(f"No files found in '{lesion_folder}' containing '{f}' as a substring.")
+            raise FileNotFoundError(f"No files found in '{lesion_folder}' containing '{f}' (normalized as '{norm_f}') as a substring.")
         elif len(matches) > 1:
             raise ValueError(
-                f"Multiple files found in '{lesion_folder}' containing '{f}' as a substring:\n" +
+                f"Multiple files found in '{lesion_folder}' containing '{f}' (normalized as '{norm_f}') as a substring:\n" +
                 "\n".join(matches)
             )
         else:
@@ -83,5 +91,6 @@ def load_lesions_and_behaviors(lesion_folder, csv_file, max_score, do_regress_ou
         covariates = scaler.fit_transform(covariates)
 
     return lesion_files, behaviors, covariates, lesion_volumes
+
 
 
