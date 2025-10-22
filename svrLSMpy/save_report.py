@@ -82,6 +82,7 @@ def save_report(output_file,
 
     html_view = view_img(output_folder/"zmap.nii.gz", bg_img=bg_img, threshold=1.7, black_bg=False, cmap="jet")
 
+    # Define file paths
     lesion_overlap_path = output_folder / "lesion_overlap.nii.gz"
     lesion_overlap_filtered_path = output_folder / "lesion_overlap_filtered.nii.gz"
     svr_beta_map_path = output_folder / "beta_map.nii.gz"
@@ -90,131 +91,77 @@ def save_report(output_file,
     zmap_p01_path = zmap_threshold_output_folder / "zmap_p01.nii.gz"
     zmap_p005_path = zmap_threshold_output_folder / "zmap_p005.nii.gz"
     zmap_p001_path = zmap_threshold_output_folder / "zmap_p001.nii.gz"
-
-    #AXIAL
-    cut_coords = get_slice_coordinates(lesion_overlap_path, num_slices, 'axial')
-
-    axial_lesion_overlap_mosaic_path = mosaic_output_folder/"axial_lesion_overlap_mosaic.png"
-    save_slice_mosaic(lesion_overlap_path, cut_coords, axial_lesion_overlap_mosaic_path, 'axial')
-    axial_lesion_overlap_mosaic = encode_image(axial_lesion_overlap_mosaic_path)
-
-    axial_lesion_overlap_filtered_mosaic_path = mosaic_output_folder/"axial_lesion_overlap_filtered_mosaic.png"
-    save_slice_mosaic(lesion_overlap_filtered_path, cut_coords, axial_lesion_overlap_filtered_mosaic_path, 'axial')
-    axial_lesion_overlap_filtered_mosaic = encode_image(axial_lesion_overlap_filtered_mosaic_path)
-
-
-    axial_svr_beta_map_mosaic_path = mosaic_output_folder/"axial_svr_beta_map_mosaic.png"
-
-    cut_coords = get_slice_coordinates(svr_beta_map_path, num_slices, 'axial')
-
-    save_slice_mosaic(svr_beta_map_path, cut_coords, axial_svr_beta_map_mosaic_path, 'axial')
-    axial_svr_beta_map_mosaic = encode_image(axial_svr_beta_map_mosaic_path)
-
-
-    axial_zmap_mosaic_path = mosaic_output_folder/"axial_zmap_mosaic.png"
-    save_slice_mosaic(zmap_path, cut_coords, axial_zmap_mosaic_path, 'axial')
-    axial_zmap_mosaic = encode_image(axial_zmap_mosaic_path)
-
-    axial_zmap_p05_mosaic_path = mosaic_output_folder/"axial_zmap_p05_mosaic.png"
-    save_slice_mosaic(zmap_p05_path, cut_coords, axial_zmap_p05_mosaic_path, 'axial')
-    axial_zmap_p05_mosaic = encode_image(axial_zmap_p05_mosaic_path)
-
-    axial_zmap_p01_mosaic_path = mosaic_output_folder/"axial_zmap_p01_mosaic.png"
-    save_slice_mosaic(zmap_p01_path, cut_coords, axial_zmap_p01_mosaic_path, 'axial')
-    axial_zmap_p01_mosaic = encode_image(axial_zmap_p01_mosaic_path)
-
-    axial_zmap_p005_mosaic_path = mosaic_output_folder/"axial_zmap_p005_mosaic.png"
-    save_slice_mosaic(zmap_p005_path, cut_coords, axial_zmap_p005_mosaic_path, 'axial')
-    axial_zmap_p005_mosaic = encode_image(axial_zmap_p005_mosaic_path)
-
-    axial_zmap_p001_mosaic_path = mosaic_output_folder/"axial_zmap_p001_mosaic.png"
-    save_slice_mosaic(zmap_p001_path, cut_coords, axial_zmap_p001_mosaic_path, 'axial')
-    axial_zmap_p001_mosaic = encode_image(axial_zmap_p001_mosaic_path)
-
-
-
+    
+    # Define processing configurations
+    orientations = ['axial', 'coronal', 'sagittal']
+    
+    # Maps to store generated mosaics
+    mosaics = {}
+    
+    # Process each orientation
+    for orientation in orientations:
+        # Get cut coordinates for lesion overlap (used for most maps)
+        lesion_cut_coords = get_slice_coordinates(lesion_overlap_path, num_slices, orientation)
+        
+        # Get cut coordinates for SVR beta map and z-maps
+        svr_cut_coords = get_slice_coordinates(svr_beta_map_path, num_slices, orientation)
+        
+        # Process lesion overlap maps
+        output_path = mosaic_output_folder / f"{orientation}_lesion_overlap_mosaic.png"
+        save_slice_mosaic(lesion_overlap_path, lesion_cut_coords, output_path, orientation)
+        mosaics[f"{orientation}_lesion_overlap"] = encode_image(output_path)
+        
+        output_path = mosaic_output_folder / f"{orientation}_lesion_overlap_filtered_mosaic.png"
+        save_slice_mosaic(lesion_overlap_filtered_path, lesion_cut_coords, output_path, orientation)
+        mosaics[f"{orientation}_lesion_overlap_filtered"] = encode_image(output_path)
+        
+        # Process SVR beta map
+        output_path = mosaic_output_folder / f"{orientation}_svr_beta_map_mosaic.png"
+        save_slice_mosaic(svr_beta_map_path, svr_cut_coords, output_path, orientation)
+        mosaics[f"{orientation}_svr_beta_map"] = encode_image(output_path)
+        
+        # Process z-maps (with z-score and colormap)
+        for zmap_name, zmap_file in [
+            ('zmap', zmap_path),
+            ('zmap_p05', zmap_p05_path),
+            ('zmap_p01', zmap_p01_path),
+            ('zmap_p005', zmap_p005_path),
+            ('zmap_p001', zmap_p001_path)
+        ]:
+            output_path = mosaic_output_folder / f"{orientation}_{zmap_name}_mosaic.png"
+            save_slice_mosaic(zmap_file, svr_cut_coords, output_path, orientation, max_zscore, cmap='bwr')
+            mosaics[f"{orientation}_{zmap_name}"] = encode_image(output_path)
+    
+    # Extract mosaics to original variable names for backward compatibility
+    # AXIAL
+    axial_lesion_overlap_mosaic = mosaics['axial_lesion_overlap']
+    axial_lesion_overlap_filtered_mosaic = mosaics['axial_lesion_overlap_filtered']
+    axial_svr_beta_map_mosaic = mosaics['axial_svr_beta_map']
+    axial_zmap_mosaic = mosaics['axial_zmap']
+    axial_zmap_p05_mosaic = mosaics['axial_zmap_p05']
+    axial_zmap_p01_mosaic = mosaics['axial_zmap_p01']
+    axial_zmap_p005_mosaic = mosaics['axial_zmap_p005']
+    axial_zmap_p001_mosaic = mosaics['axial_zmap_p001']
+    
     # CORONAL
-    cut_coords = get_slice_coordinates(lesion_overlap_path, num_slices, 'coronal')
-
-    coronal_lesion_overlap_mosaic_path = mosaic_output_folder / "coronal_lesion_overlap_mosaic.png"
-    save_slice_mosaic(lesion_overlap_path, cut_coords, coronal_lesion_overlap_mosaic_path, 'coronal')
-    coronal_lesion_overlap_mosaic = encode_image(coronal_lesion_overlap_mosaic_path)
-
-    coronal_lesion_overlap_filtered_mosaic_path = mosaic_output_folder / "coronal_lesion_overlap_filtered_mosaic.png"
-    save_slice_mosaic(lesion_overlap_filtered_path, cut_coords, coronal_lesion_overlap_filtered_mosaic_path, 'coronal')
-    coronal_lesion_overlap_filtered_mosaic = encode_image(coronal_lesion_overlap_filtered_mosaic_path)
-
-
-    coronal_svr_beta_map_mosaic_path = mosaic_output_folder / "coronal_svr_beta_map_mosaic.png"
-
-    cut_coords = get_slice_coordinates(svr_beta_map_path, num_slices, 'coronal')
-
-    save_slice_mosaic(svr_beta_map_path, cut_coords, coronal_svr_beta_map_mosaic_path, 'coronal')
-    coronal_svr_beta_map_mosaic = encode_image(coronal_svr_beta_map_mosaic_path)
-
-
-    coronal_zmap_mosaic_path = mosaic_output_folder / "coronal_zmap_mosaic.png"
-    save_slice_mosaic(zmap_path, cut_coords, coronal_zmap_mosaic_path, 'coronal')
-    coronal_zmap_mosaic = encode_image(coronal_zmap_mosaic_path)
-
-    coronal_zmap_p05_mosaic_path = mosaic_output_folder / "coronal_zmap_p05_mosaic.png"
-    save_slice_mosaic(zmap_p05_path, cut_coords, coronal_zmap_p05_mosaic_path, 'coronal')
-    coronal_zmap_p05_mosaic = encode_image(coronal_zmap_p05_mosaic_path)
-
-    coronal_zmap_p01_mosaic_path = mosaic_output_folder / "coronal_zmap_p01_mosaic.png"
-    save_slice_mosaic(zmap_p01_path, cut_coords, coronal_zmap_p01_mosaic_path, 'coronal')
-    coronal_zmap_p01_mosaic = encode_image(coronal_zmap_p01_mosaic_path)
-
-    coronal_zmap_p005_mosaic_path = mosaic_output_folder / "coronal_zmap_p005_mosaic.png"
-    save_slice_mosaic(zmap_p005_path, cut_coords, coronal_zmap_p005_mosaic_path, 'coronal')
-    coronal_zmap_p005_mosaic = encode_image(coronal_zmap_p005_mosaic_path)
-
-    coronal_zmap_p001_mosaic_path = mosaic_output_folder / "coronal_zmap_p001_mosaic.png"
-    save_slice_mosaic(zmap_p001_path, cut_coords, coronal_zmap_p001_mosaic_path, 'coronal')
-    coronal_zmap_p001_mosaic = encode_image(coronal_zmap_p001_mosaic_path)
-
-
-
+    coronal_lesion_overlap_mosaic = mosaics['coronal_lesion_overlap']
+    coronal_lesion_overlap_filtered_mosaic = mosaics['coronal_lesion_overlap_filtered']
+    coronal_svr_beta_map_mosaic = mosaics['coronal_svr_beta_map']
+    coronal_zmap_mosaic = mosaics['coronal_zmap']
+    coronal_zmap_p05_mosaic = mosaics['coronal_zmap_p05']
+    coronal_zmap_p01_mosaic = mosaics['coronal_zmap_p01']
+    coronal_zmap_p005_mosaic = mosaics['coronal_zmap_p005']
+    coronal_zmap_p001_mosaic = mosaics['coronal_zmap_p001']
+    
     # SAGITTAL
-    cut_coords = get_slice_coordinates(lesion_overlap_path, num_slices, 'sagittal')
-
-    sagittal_lesion_overlap_mosaic_path = mosaic_output_folder / "sagittal_lesion_overlap_mosaic.png"
-    save_slice_mosaic(lesion_overlap_path, cut_coords, sagittal_lesion_overlap_mosaic_path, 'sagittal')
-    sagittal_lesion_overlap_mosaic = encode_image(sagittal_lesion_overlap_mosaic_path)
-
-    sagittal_lesion_overlap_filtered_mosaic_path = mosaic_output_folder / "sagittal_lesion_overlap_filtered_mosaic.png"
-    save_slice_mosaic(lesion_overlap_filtered_path, cut_coords, sagittal_lesion_overlap_filtered_mosaic_path, 'sagittal')
-    sagittal_lesion_overlap_filtered_mosaic = encode_image(sagittal_lesion_overlap_filtered_mosaic_path)
-
-
-    sagittal_svr_beta_map_mosaic_path = mosaic_output_folder / "sagittal_svr_beta_map_mosaic.png"
-
-    cut_coords = get_slice_coordinates(svr_beta_map_path, num_slices, 'sagittal')
-
-    save_slice_mosaic(svr_beta_map_path, cut_coords, sagittal_svr_beta_map_mosaic_path, 'sagittal')
-    sagittal_svr_beta_map_mosaic = encode_image(sagittal_svr_beta_map_mosaic_path)
-
-
-    sagittal_zmap_mosaic_path = mosaic_output_folder / "sagittal_zmap_mosaic.png"
-    save_slice_mosaic(zmap_path, cut_coords, sagittal_zmap_mosaic_path, 'sagittal')
-    sagittal_zmap_mosaic = encode_image(sagittal_zmap_mosaic_path)
-
-    sagittal_zmap_p05_mosaic_path = mosaic_output_folder / "sagittal_zmap_p05_mosaic.png"
-    save_slice_mosaic(zmap_p05_path, cut_coords, sagittal_zmap_p05_mosaic_path, 'sagittal')
-    sagittal_zmap_p05_mosaic = encode_image(sagittal_zmap_p05_mosaic_path)
-
-
-    sagittal_zmap_p01_mosaic_path = mosaic_output_folder / "sagittal_zmap_p01_mosaic.png"
-    save_slice_mosaic(zmap_p01_path, cut_coords, sagittal_zmap_p01_mosaic_path, 'sagittal')
-    sagittal_zmap_p01_mosaic = encode_image(sagittal_zmap_p01_mosaic_path)
-
-    sagittal_zmap_p005_mosaic_path = mosaic_output_folder / "sagittal_zmap_p005_mosaic.png"
-    save_slice_mosaic(zmap_p005_path, cut_coords, sagittal_zmap_p005_mosaic_path, 'sagittal')
-    sagittal_zmap_p005_mosaic = encode_image(sagittal_zmap_p005_mosaic_path)
-
-    sagittal_zmap_p001_mosaic_path = mosaic_output_folder / "sagittal_zmap_p001_mosaic.png"
-    save_slice_mosaic(zmap_p001_path, cut_coords, sagittal_zmap_p001_mosaic_path, 'sagittal')
-    sagittal_zmap_p001_mosaic = encode_image(sagittal_zmap_p001_mosaic_path)
+    sagittal_lesion_overlap_mosaic = mosaics['sagittal_lesion_overlap']
+    sagittal_lesion_overlap_filtered_mosaic = mosaics['sagittal_lesion_overlap_filtered']
+    sagittal_svr_beta_map_mosaic = mosaics['sagittal_svr_beta_map']
+    sagittal_zmap_mosaic = mosaics['sagittal_zmap']
+    sagittal_zmap_p05_mosaic = mosaics['sagittal_zmap_p05']
+    sagittal_zmap_p01_mosaic = mosaics['sagittal_zmap_p01']
+    sagittal_zmap_p005_mosaic = mosaics['sagittal_zmap_p005']
+    sagittal_zmap_p001_mosaic = mosaics['sagittal_zmap_p001']
 
 
     with open(output_file, 'w') as f:
@@ -580,6 +527,9 @@ def save_report(output_file,
                     </div>
         
                     <!-- Thresholded Images -->
+                """)
+        
+                f.write(f"""
                     <div class="threshold-group" data-threshold="p<0.05" style="display: none;">
                         <img src="data:image/png;base64,{axial_zmap_p05_mosaic}" alt="Z Map p<0.05 Axial" data-group="group5" data-view="axial" style="width: 100%; height: auto;" class="active">
                         <img src="data:image/png;base64,{coronal_zmap_p05_mosaic}" alt="Z Map p<0.05 Coronal" data-group="group5" data-view="coronal" style="width: 100%; height: auto;">
@@ -603,6 +553,11 @@ def save_report(output_file,
                         <img src="data:image/png;base64,{coronal_zmap_p001_mosaic}" alt="Z Map p<0.001 Coronal" data-group="group8" data-view="coronal" style="width: 100%; height: auto;">
                         <img src="data:image/png;base64,{sagittal_zmap_p001_mosaic}" alt="Z Map p<0.001 Sagittal" data-group="group8" data-view="sagittal" style="width: 100%; height: auto;">
                     </div>
+                """)
+
+                
+
+                f.write(f"""
                 </div>
             </div>
             
@@ -689,6 +644,7 @@ def save_report(output_file,
         """)
 
     print(f"Report successfully saved to {output_file}.")
+
 
 
 
