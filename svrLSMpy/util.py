@@ -1,4 +1,6 @@
 from datetime import datetime
+import re
+
 def get_current_datetime_for_filename():
     now = datetime.now()
     # Format the date and time as a string, using '-' and '_' to avoid invalid file name characters
@@ -23,3 +25,8 @@ def easy_time(seconds):
         parts.append(f"{seconds} SEC")
 
     return " ".join(parts)
+
+
+def normalize_file_name(name):
+    # Lowercase, remove underscores, hyphens, and spaces
+    return re.sub(r'[_\-\s]', '', name.lower())
