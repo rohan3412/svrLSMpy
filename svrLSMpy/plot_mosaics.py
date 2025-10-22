@@ -56,7 +56,9 @@ def get_axial_slices(nii_file_path, num_slices):
 
 def save_axial_mosaic(nii_file_path, cut_coords, output_image_path, max_activation=None):
     img = load_img(nii_file_path)
-    plot_img(img, cut_coords, output_image_path, display_mode="z", threshold=0, bg_img=bg_img, vmin=max_activation, vmax=max_activation,, black_bg=False,colorbar=True, cmap="jet")
+    vmin = -max_activation if max_activation is not None
+    vmax = max_activation if max_activation is not None
+    plot_img(img, cut_coords, output_image_path, display_mode="z", threshold=0, bg_img=bg_img, vmin=vmin, vmax=vmax, black_bg=False,colorbar=True, cmap="jet")
 
 
 def get_coronal_slices(nii_file_path, num_slices):
@@ -102,15 +104,10 @@ def get_coronal_slices(nii_file_path, num_slices):
     return cut_coords
 
 def save_coronal_mosaic(nii_file_path, cut_coords, output_image_path, max_activation=None):
-    """
-    Save a mosaic of coronal slices from the NIfTI file.
-
-    :param nii_file_path: Path to the NIfTI (.nii) file.
-    :param cut_coords: List of coronal slice coordinates in world space.
-    :param output_image_path: Path to save the output image.
-    """
-    img = load_img(nii_file_path)
-    plot_img(img, cut_coords, output_image_path, display_mode="y", threshold=0, bg_img=bg_img, vmin=max_activation, vmax=max_activation,, black_bg=False, colorbar=True, cmap="jet")
+    img = load_img(nii_file_path)     
+    vmin = -max_activation if max_activation is not None     
+    vmax = max_activation if max_activation is not None
+    plot_img(img, cut_coords, output_image_path, display_mode="y", threshold=0, bg_img=bg_img, vmin=vmin, vmax=vmax, black_bg=False, colorbar=True, cmap="jet")
 
 
 def get_sagittal_slices(nii_file_path, num_slices):
@@ -156,25 +153,11 @@ def get_sagittal_slices(nii_file_path, num_slices):
     return cut_coords
 
 def save_sagittal_mosaic(nii_file_path, cut_coords, output_image_path, max_activation=None):
-    """
-    Save a mosaic of sagittal slices from the NIfTI file.
-
-    :param nii_file_path: Path to the NIfTI (.nii) file.
-    :param cut_coords: List of sagittal slice coordinates in world space.
-    :param output_image_path: Path to save the output image.
-    """
-    img = load_img(nii_file_path)
-    plot_img(img, cut_coords, output_image_path, display_mode="x", threshold=0, bg_img=bg_img, vmin=max_activation, vmax=max_activation,, black_bg=False, colorbar=True, cmap="jet")
+    img = load_img(nii_file_path)     
+    vmin = -max_activation if max_activation is not None     
+    vmax = max_activation if max_activation is not None
+    plot_img(img, cut_coords, output_image_path, display_mode="x", threshold=0, bg_img=bg_img, vmin=vmin, vmax=vmax, black_bg=False, colorbar=True, cmap="jet")
 
 
-'''
-# Example usage
-nii_file_path = "lesion_overlap_filtered.nii.gz"
-output_image_path = "lesion_overlap_filtered.png"
-num_slices = 10
-
-cut_coords = get_axial_slices(nii_file_path, num_slices)
-save_axial_mosaic(nii_file_path,cut_coords,output_image_path)
-'''
 
 
