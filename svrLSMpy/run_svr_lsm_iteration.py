@@ -48,7 +48,6 @@ def run_svr_lsm_iteration(symptom_folder,
     print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)),end="\n\n")
 
     min_patient_count, features, masker = filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_vector, output_folder)
-    print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
 
     if covariates is not None:
         if regress_out_covariates_on_scores:
@@ -133,6 +132,7 @@ def run_svr_lsm_iteration(symptom_folder,
                 normalize_vector)
 
     print("\n\tTOTAL TIME TAKEN : ", easy_time(int(time.time() - start_time)))
+
 
 
 
