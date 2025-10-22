@@ -54,9 +54,9 @@ def get_axial_slices(nii_file_path, num_slices):
 
     return cut_coords
 
-def save_axial_mosaic(nii_file_path, cut_coords, output_image_path):
+def save_axial_mosaic(nii_file_path, cut_coords, output_image_path, max_activation=None):
     img = load_img(nii_file_path)
-    plot_img(img, cut_coords, output_image_path, display_mode="z", threshold=0, bg_img=bg_img, black_bg=False,colorbar=True, cmap="jet")
+    plot_img(img, cut_coords, output_image_path, display_mode="z", threshold=0, bg_img=bg_img, vmin=max_activation, vmax=max_activation,, black_bg=False,colorbar=True, cmap="jet")
 
 
 def get_coronal_slices(nii_file_path, num_slices):
@@ -101,7 +101,7 @@ def get_coronal_slices(nii_file_path, num_slices):
 
     return cut_coords
 
-def save_coronal_mosaic(nii_file_path, cut_coords, output_image_path):
+def save_coronal_mosaic(nii_file_path, cut_coords, output_image_path, max_activation=None):
     """
     Save a mosaic of coronal slices from the NIfTI file.
 
@@ -110,7 +110,7 @@ def save_coronal_mosaic(nii_file_path, cut_coords, output_image_path):
     :param output_image_path: Path to save the output image.
     """
     img = load_img(nii_file_path)
-    plot_img(img, cut_coords, output_image_path, display_mode="y", threshold=0, bg_img=bg_img, black_bg=False, colorbar=True, cmap="jet")
+    plot_img(img, cut_coords, output_image_path, display_mode="y", threshold=0, bg_img=bg_img, vmin=max_activation, vmax=max_activation,, black_bg=False, colorbar=True, cmap="jet")
 
 
 def get_sagittal_slices(nii_file_path, num_slices):
@@ -155,7 +155,7 @@ def get_sagittal_slices(nii_file_path, num_slices):
 
     return cut_coords
 
-def save_sagittal_mosaic(nii_file_path, cut_coords, output_image_path):
+def save_sagittal_mosaic(nii_file_path, cut_coords, output_image_path, max_activation=None):
     """
     Save a mosaic of sagittal slices from the NIfTI file.
 
@@ -164,7 +164,7 @@ def save_sagittal_mosaic(nii_file_path, cut_coords, output_image_path):
     :param output_image_path: Path to save the output image.
     """
     img = load_img(nii_file_path)
-    plot_img(img, cut_coords, output_image_path, display_mode="x", threshold=0, bg_img=bg_img, black_bg=False, colorbar=True, cmap="jet")
+    plot_img(img, cut_coords, output_image_path, display_mode="x", threshold=0, bg_img=bg_img, vmin=max_activation, vmax=max_activation,, black_bg=False, colorbar=True, cmap="jet")
 
 
 '''
@@ -176,4 +176,5 @@ num_slices = 10
 cut_coords = get_axial_slices(nii_file_path, num_slices)
 save_axial_mosaic(nii_file_path,cut_coords,output_image_path)
 '''
+
 
