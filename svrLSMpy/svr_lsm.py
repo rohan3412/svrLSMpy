@@ -197,14 +197,14 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
     # Compute mean and standard deviation
     mean_null = sum_null / num_permutations
 
+    variance = (sum_null_squared / num_permutations) - (mean_null ** 2)
+    std_null = np.sqrt(np.maximum(variance, 0) + 1e-8)
+    
     # saving null map
     nifti_null_map = masking.unmask(mean_null, masker)
     nifti_null_path = output_folder / 'null_map.nii.gz'
     nib.save(nifti_null_map, nifti_null_path)
-
-    variance = (sum_null_squared / num_permutations) - (mean_null ** 2)
-    std_null = np.sqrt(np.maximum(variance, 0) + 1e-8)
-
+    
     # Compute z-map
     zmap = (coef_map - mean_null) / std_null
 
@@ -256,6 +256,7 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
         nib.save(nifti_zmap_thresh, zmap_threshold_output_folder / f'zmap_{label}.nii.gz')
 
     return best_params, coef_map, nifti_zmap, zmap
+
 
 
 
