@@ -91,9 +91,6 @@ def run_svr_lsm_iteration(symptom_folder,
     num_patients = len(behaviors)
     mean_lesion_volume = np.mean(lesion_volumes)
 
-    # Compute the zmap range
-    zmap_range = (np.min(zmap), np.max(zmap))
-
     zmap_atlas_output_dir = output_folder / "atlasreader_output"
 
     atlas_read_cluster(nifti_zmap, zmap_atlas_output_dir)
@@ -115,7 +112,6 @@ def run_svr_lsm_iteration(symptom_folder,
                 behaviour_name,
                 n_permutations,
                 alpha,
-                zmap_range,
                 zmap,
                 min_patient_count,
                 num_patients,
@@ -132,6 +128,7 @@ def run_svr_lsm_iteration(symptom_folder,
                 normalize_vector)
 
     print("\n\tTOTAL TIME TAKEN : ", easy_time(int(time.time() - start_time)))
+
 
 
 
