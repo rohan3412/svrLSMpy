@@ -20,15 +20,6 @@ AXIS_CONFIG = {
 
 
 def get_slice_coordinates(nii_file_path, num_slices, orientation='axial', adjustment=3.0):
-    """
-    Calculate slice cut coordinates (in world space) for a NIfTI file.
-
-    :param nii_file_path: Path to the NIfTI (.nii) file.
-    :param num_slices: Number of slices to generate.
-    :param orientation: Slice orientation ('axial', 'coronal', or 'sagittal').
-    :param adjustment: Amount to adjust min/max bounds (default: 3.0).
-    :return: A list of cut coordinates in world space.
-    """
     if orientation not in AXIS_CONFIG:
         raise ValueError(f"Orientation must be one of {list(AXIS_CONFIG.keys())}")
     
@@ -70,19 +61,6 @@ def get_slice_coordinates(nii_file_path, num_slices, orientation='axial', adjust
 def save_slice_mosaic(nii_file_path, cut_coords, output_image_path, 
                       orientation='axial', max_activation=None, 
                       cmap='jet', threshold=0, black_bg=False, colorbar=True):
-    """
-    Save a mosaic of brain slices to an image file.
-
-    :param nii_file_path: Path to the NIfTI (.nii) file.
-    :param cut_coords: List of cut coordinates in world space.
-    :param output_image_path: Path to save the output image.
-    :param orientation: Slice orientation ('axial', 'coronal', or 'sagittal').
-    :param max_activation: Maximum activation value for color scale (symmetric around 0).
-    :param cmap: Colormap to use (default: 'jet').
-    :param threshold: Threshold for displaying values (default: 0).
-    :param black_bg: Use black background (default: False).
-    :param colorbar: Show colorbar (default: True).
-    """
     if orientation not in AXIS_CONFIG:
         raise ValueError(f"Orientation must be one of {list(AXIS_CONFIG.keys())}")
     
@@ -96,23 +74,5 @@ def save_slice_mosaic(nii_file_path, cut_coords, output_image_path,
              display_mode=display_mode, threshold=threshold, 
              bg_img=bg_img, vmin=vmin, vmax=vmax, 
              black_bg=black_bg, colorbar=colorbar, cmap=cmap)
-
-
-# Convenience functions for backward compatibility
-def get_axial_slices(nii_file_path, num_slices):
-    return get_slice_coordinates(nii_file_path, num_slices, 'axial')
-
-def get_coronal_slices(nii_file_path, num_slices):
-    return get_slice_coordinates(nii_file_path, num_slices, 'coronal')
-
-def get_sagittal_slices(nii_file_path, num_slices):
-    return get_slice_coordinates(nii_file_path, num_slices, 'sagittal')
-
-def save_axial_mosaic(nii_file_path, cut_coords, output_image_path, max_activation=None):
-    save_slice_mosaic(nii_file_path, cut_coords, output_image_path, 'axial', max_activation)
-
-def save_coronal_mosaic(nii_file_path, cut_coords, output_image_path, max_activation=None):
-    save_slice_mosaic(nii_file_path, cut_coords, output_image_path, 'coronal', max_activation)
-
-def save_sagittal_mosaic(nii_file_path, cut_coords, output_image_path, max_activation=None):
     save_slice_mosaic(nii_file_path, cut_coords, output_image_path, 'sagittal', max_activation)
+
