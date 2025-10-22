@@ -529,35 +529,23 @@ def save_report(output_file,
                     <!-- Thresholded Images -->
                 """)
         
-                f.write(f"""
-                    <div class="threshold-group" data-threshold="p<0.05" style="display: none;">
-                        <img src="data:image/png;base64,{axial_zmap_p05_mosaic}" alt="Z Map p<0.05 Axial" data-group="group5" data-view="axial" style="width: 100%; height: auto;" class="active">
-                        <img src="data:image/png;base64,{coronal_zmap_p05_mosaic}" alt="Z Map p<0.05 Coronal" data-group="group5" data-view="coronal" style="width: 100%; height: auto;">
-                        <img src="data:image/png;base64,{sagittal_zmap_p05_mosaic}" alt="Z Map p<0.05 Sagittal" data-group="group5" data-view="sagittal" style="width: 100%; height: auto;">
-                    </div>
+        thresholds = [
+            ('p05', 'p<0.05', 5),
+            ('p01', 'p<0.01', 6),
+            ('p005', 'p<0.005', 7),
+            ('p001', 'p<0.001', 8)
+        ]
         
-                    <div class="threshold-group" data-threshold="p<0.01" style="display: none;">
-                        <img src="data:image/png;base64,{axial_zmap_p01_mosaic}" alt="Z Map p<0.01 Axial" data-group="group6" data-view="axial" style="width: 100%; height: auto;" class="active">
-                        <img src="data:image/png;base64,{coronal_zmap_p01_mosaic}" alt="Z Map p<0.01 Coronal" data-group="group6" data-view="coronal" style="width: 100%; height: auto;">
-                        <img src="data:image/png;base64,{sagittal_zmap_p01_mosaic}" alt="Z Map p<0.01 Sagittal" data-group="group6" data-view="sagittal" style="width: 100%; height: auto;">
+        for threshold_suffix, threshold_label, group_num in thresholds:
+            f.write(f'''
+                    <div class="threshold-group" data-threshold="{threshold_label}" style="display: none;">
+                        <img src="data:image/png;base64,{mosaics[f'axial_zmap_{threshold_suffix}']}" alt="Z Map {threshold_label} Axial" data-group="group{group_num}" data-view="axial" style="width: 100%; height: auto;" class="active">
+                        <img src="data:image/png;base64,{mosaics[f'coronal_zmap_{threshold_suffix}']}" alt="Z Map {threshold_label} Coronal" data-group="group{group_num}" data-view="coronal" style="width: 100%; height: auto;">
+                        <img src="data:image/png;base64,{mosaics[f'sagittal_zmap_{threshold_suffix}']}" alt="Z Map {threshold_label} Sagittal" data-group="group{group_num}" data-view="sagittal" style="width: 100%; height: auto;">
                     </div>
-        
-                    <div class="threshold-group" data-threshold="p<0.005" style="display: none;">
-                        <img src="data:image/png;base64,{axial_zmap_p005_mosaic}" alt="Z Map p<0.005 Axial" data-group="group7" data-view="axial" style="width: 100%; height: auto;" class="active">
-                        <img src="data:image/png;base64,{coronal_zmap_p005_mosaic}" alt="Z Map p<0.005 Coronal" data-group="group7" data-view="coronal" style="width: 100%; height: auto;">
-                        <img src="data:image/png;base64,{sagittal_zmap_p005_mosaic}" alt="Z Map p<0.005 Sagittal" data-group="group7" data-view="sagittal" style="width: 100%; height: auto;">
-                    </div>
-        
-                    <div class="threshold-group" data-threshold="p<0.001" style="display: none;">
-                        <img src="data:image/png;base64,{axial_zmap_p001_mosaic}" alt="Z Map p<0.001 Axial" data-group="group8" data-view="axial" style="width: 100%; height: auto;" class="active">
-                        <img src="data:image/png;base64,{coronal_zmap_p001_mosaic}" alt="Z Map p<0.001 Coronal" data-group="group8" data-view="coronal" style="width: 100%; height: auto;">
-                        <img src="data:image/png;base64,{sagittal_zmap_p001_mosaic}" alt="Z Map p<0.001 Sagittal" data-group="group8" data-view="sagittal" style="width: 100%; height: auto;">
-                    </div>
-                """)
-
-                
-
-                f.write(f"""
+            ''')
+            
+        f.write(f"""
                 </div>
             </div>
             
@@ -644,6 +632,7 @@ def save_report(output_file,
         """)
 
     print(f"Report successfully saved to {output_file}.")
+
 
 
 
