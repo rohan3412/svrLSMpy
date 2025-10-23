@@ -1,5 +1,6 @@
 import pandas as pd
 import nibabel as nib
+import numpy as np
 from nilearn.plotting import view_img
 from pathlib import Path
 
@@ -632,6 +633,7 @@ def save_report(output_file,
         """)
 
     print(f"Report successfully saved to {output_file}.")
+
 
 
 
