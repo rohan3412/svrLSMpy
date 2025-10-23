@@ -9,6 +9,7 @@ from .save_report import save_report
 import time
 from pathlib import Path
 import numpy as np
+from nilearn import masking
 
 
 def run_svr_lsm_iteration(symptom_folder,
@@ -60,6 +61,7 @@ def run_svr_lsm_iteration(symptom_folder,
             try:
                 print("Running... Press Ctrl+C to stop")
                 features = regress_covariates_from_lesions(features, covariates)
+                nib.save(output_folder / 'covariate_regressed_out_of_overlap_map.nii.gz', masking.unmask(features, masker))
                 print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
                   
             except KeyboardInterrupt:
@@ -127,6 +129,7 @@ def run_svr_lsm_iteration(symptom_folder,
                 normalize_vector)
 
     print("\n\tTOTAL TIME TAKEN : ", easy_time(int(time.time() - start_time)))
+
 
 
 
