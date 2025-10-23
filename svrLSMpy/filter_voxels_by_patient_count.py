@@ -4,6 +4,7 @@ from sklearn.preprocessing import normalize
 from nilearn import masking
 from tqdm import tqdm
 from nilearn.image import resample_to_img
+import time
 
 def filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_vector, output_folder):
     """
@@ -33,6 +34,7 @@ def filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_ve
     masker = masking.compute_brain_mask(lesion_imgs[0])
     lesion_data = [masking.apply_mask(img, masker) for img in tqdm(lesion_imgs, desc="Applying mask to lesion images")]
     '''
+    time.sleep(1)
     lesion_imgs = [nib.load(f) for f in tqdm(lesion_files, desc="Loading lesion images")]
     reference_img = lesion_imgs[0]
     masker = masking.compute_brain_mask(reference_img)
@@ -72,6 +74,7 @@ def filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_ve
         lesion_data_prepared = normalize(lesion_data_prepared, norm='l2', axis=1)
 
     return min_patient_count,lesion_data_prepared, masker
+
 
 
 
