@@ -74,5 +74,5 @@ def save_slice_mosaic(nii_file_path, cut_coords, output_image_path,
              display_mode=display_mode, threshold=threshold, 
              bg_img=bg_img, vmin=vmin, vmax=vmax, 
              black_bg=black_bg, colorbar=colorbar, cmap=cmap)
-    save_slice_mosaic(nii_file_path, cut_coords, output_image_path, 'sagittal', max_activation)
+
 
