@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 import base64
 
@@ -28,6 +28,14 @@ def easy_time(seconds):
 
     return " ".join(parts)
 
+def easy_eta(seconds):
+    eta_time = timedelta(seconds=seconds)
+    
+    current_time = datetime.now()
+    final_time = current_time + eta_time
+    
+    return final_time.strftime("%I:%M:%S %p")
+
 
 def normalize_file_name(name):
     # Lowercase, remove underscores, hyphens, and spaces
@@ -36,4 +44,5 @@ def normalize_file_name(name):
 def encode_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode('utf-8')
+
 
