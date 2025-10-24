@@ -18,7 +18,7 @@ from tqdm import tqdm
 import warnings
 warnings.filterwarnings("ignore")
 
-from .util import easy_time
+from .util import easy_time, easy_eta
 
 
 def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutations=1, alpha=0.05, n_splits=5):
@@ -238,7 +238,7 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
                 del vector_mean
     
                 elapsed_time = time.time() - permute_time
-                pbar.set_postfix(elapsed=f"{easy_time(elapsed_time)}",eta=f"{easy_time((elapsed_time / (i + 1)) * (n_permutations - i - 1))}")
+                pbar.set_postfix(elapsed=f"{easy_time(elapsed_time)}",eta=f"{easy_eta((elapsed_time / (i + 1)) * (n_permutations - i - 1))}")
     
     print(f"Permutations completed. Null distribution saved to {results_file}\n")
     
@@ -307,6 +307,7 @@ def svr_lsm(features, behaviors, masker, output_folder, param_grid, n_permutatio
         nib.save(nifti_zmap_thresh, zmap_threshold_output_folder / f'zmap_{label}.nii.gz')
 
     return best_params, coef_map, nifti_zmap, zmap
+
 
 
 
