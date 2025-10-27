@@ -41,8 +41,7 @@ def load_lesions_and_behaviors(
             )
         if len(matches) > 1:
             raise ValueError(
-                f"CSV entry '{filename}' matches multiple lesion files in '{lesion_folder}':\n"
-                f"{'\n'.join(matches)}"
+                f"CSV entry '{filename}' matches multiple lesion files in '{lesion_folder}':\n",matches
             )
 
         lesion_file = os.path.join(lesion_folder, matches[0])
@@ -128,3 +127,4 @@ def load_lesions_and_behaviors(
         print("SKIPPED Covariate processing and lesion volume computation.")
 
     return lesion_files, behaviors, covariates, lesion_volumes
+
