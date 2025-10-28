@@ -74,7 +74,7 @@ def run_svr_lsm_iteration(symptom_folder,
             try:
                 print("Running... Press Ctrl+C to stop")
                 features = regress_covariates_from_lesions(features, covariates)
-                nib.save(masking.unmask(features, masker), output_folder / 'covariate_regressed_out_of_overlap_map.nii.gz')
+                nib.save(masking.unmask(np.sum(features, axis=-1), masker), output_folder / 'covariate_regressed_out_of_overlap_map.nii.gz')
                 print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)), end="\n\n")
                   
             except KeyboardInterrupt:
@@ -142,6 +142,7 @@ def run_svr_lsm_iteration(symptom_folder,
                 normalize_vector)
 
     print("\n\tTOTAL TIME TAKEN : ", easy_time(int(time.time() - start_time)))
+
 
 
 
