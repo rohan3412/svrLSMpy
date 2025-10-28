@@ -4,7 +4,7 @@ import nibabel as nib
 import os
 from tqdm import tqdm
 from sklearn.preprocessing import StandardScaler
-from .util import normalize_file_name
+from .util import normalize_file_name, join_with_and
 
 def load_lesions_and_behaviors(
     lesion_folder,
@@ -87,6 +87,7 @@ def load_lesions_and_behaviors(
             if covariates.isna().any().any():
                 covariates = covariates.fillna(covariates.mean())
                 print("Filled NaN values in covariates with column means.")
+            covariate_names = list(covariates.columns)
             covariates = np.array(covariates)  # Convert to NumPy array for consistency
 
         if do_regress_out_lesion_volume:
@@ -107,7 +108,7 @@ def load_lesions_and_behaviors(
 
             # Combine with covariates or use lesion volumes alone
             if has_covariates:
-                print(f"Loaded {covariates.shape[1]} additional covariates and lesion volume as covariate.")
+                print(f"Loaded {covariates.shape[1]} additional covariates ({join_with_and(covariate_names)}) and lesion volume as covariate.")
                 covariates = np.hstack([lesion_volumes, covariates])
             else:
                 print("No additional covariates found in the CSV, using lesion volume as covariate.")
@@ -115,7 +116,7 @@ def load_lesions_and_behaviors(
         else:
             # No lesion volumes
             if has_covariates:
-                print(f"Loaded {covariates.shape[1]} additional covariates.")
+                print(f"Loaded {covariates.shape[1]} additional covariates ({join_with_and(covariate_names)}).")
             else:
                 print("No additional covariates found in the CSV (and regress_out_lesion_volume is False).")
                 covariates = None
@@ -127,4 +128,5 @@ def load_lesions_and_behaviors(
         print("SKIPPED Covariate processing and lesion volume computation.")
 
     return lesion_files, behaviors, covariates, lesion_volumes
+
 
