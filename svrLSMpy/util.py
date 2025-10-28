@@ -41,8 +41,21 @@ def normalize_file_name(name):
     # Lowercase, remove underscores, hyphens, and spaces
     return re.sub(r'[_\-\s]', '', name.lower())
 
+def join_with_and(items):
+    # Return a string of items separated by commas, with 'and' before the last item.
+    if not items:
+        return ""
+    elif len(items) == 1:
+        return items[0]
+    elif len(items) == 2:
+        return f"{items[0]} and {items[1]}"
+    else:
+        return ", ".join(items[:-1]) + f", and {items[-1]}"
+
+
 def encode_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode('utf-8')
+
 
 
