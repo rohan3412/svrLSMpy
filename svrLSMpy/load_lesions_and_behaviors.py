@@ -71,9 +71,22 @@ def load_lesions_and_behaviors(
     print(f"\nNumber of lesions: {len(temp_df['Lesion'])}")
     print(f"Number of scores: {len(temp_df['Score'])}\n")
 
-    # Initialize outputs
-    lesion_volumes = None
     covariates = None
+
+    # Compute lesion volumes
+    lesion_volumes = []
+    for file in tqdm(lesion_files, desc="Loading lesions and computing volumes"):
+        lesion_img = nib.load(file)
+        lesion_data = lesion_img.get_fdata()
+        voxel_volume = np.prod(lesion_img.header.get_zooms())
+        volume = np.sum(lesion_data > 0) * voxel_volume
+        lesion_volumes.append(volume)
+
+    lesion_volumes = np.array(lesion_volumes).reshape(-1, 1)
+    print(
+        f"Lesion volumes summary: min={np.nanmin(lesion_volumes):.3f}, "
+        f"max={np.nanmax(lesion_volumes):.3f}, NaNs={np.isnan(lesion_volumes).sum()}"
+    )
 
     # Process covariates and lesion volumes only if do_regress_out_covariates is True
     if do_regress_out_covariates:
@@ -91,27 +104,11 @@ def load_lesions_and_behaviors(
             covariates = np.array(covariates)  # Convert to NumPy array for consistency
 
         if do_regress_out_lesion_volume:
-            # Compute lesion volumes
-            lesion_volumes = []
-            for file in tqdm(lesion_files, desc="Loading lesions and computing volumes"):
-                lesion_img = nib.load(file)
-                lesion_data = lesion_img.get_fdata()
-                voxel_volume = np.prod(lesion_img.header.get_zooms())
-                volume = np.sum(lesion_data > 0) * voxel_volume
-                lesion_volumes.append(volume)
-
-            lesion_volumes = np.array(lesion_volumes).reshape(-1, 1)
-            print(
-                f"Lesion volumes summary: min={np.nanmin(lesion_volumes):.3f}, "
-                f"max={np.nanmax(lesion_volumes):.3f}, NaNs={np.isnan(lesion_volumes).sum()}"
-            )
-
-            # Combine with covariates or use lesion volumes alone
             if has_covariates:
                 print(f"Loaded {covariates.shape[1]} additional covariates ({join_with_and(covariate_names)}) and lesion volume as covariate.")
                 covariates = np.hstack([lesion_volumes, covariates])
             else:
-                print("No additional covariates found in the CSV, using lesion volume as covariate.")
+                print("No additional covariates found in the CSV, using only lesion volume as covariate.")
                 covariates = lesion_volumes
         else:
             # No lesion volumes
@@ -119,7 +116,6 @@ def load_lesions_and_behaviors(
                 print(f"Loaded {covariates.shape[1]} additional covariates ({join_with_and(covariate_names)}).")
             else:
                 print("No additional covariates found in the CSV (and regress_out_lesion_volume is False).")
-                covariates = None
 
         # Z-transform covariates
         if covariates is not None:
@@ -128,5 +124,6 @@ def load_lesions_and_behaviors(
         print("SKIPPED Covariate processing and lesion volume computation.")
 
     return lesion_files, behaviors, covariates, lesion_volumes
+
 
 
