@@ -11,7 +11,8 @@ def load_lesions_and_behaviors(
     csv_file,
     max_score,
     do_regress_out_lesion_volume,
-    do_regress_out_covariates
+    do_regress_out_covariates,
+    output_folder
 ):
     
     print("Loading behavioral data and lesion files...")
@@ -111,13 +112,13 @@ def load_lesions_and_behaviors(
         # Save overlap maps as NIfTI files
         if lesion_overlap_groupA is not None:
             overlap_imgA = nib.Nifti1Image(lesion_overlap_groupA.astype(np.uint8), lesion_imgs[0].affine)
-            overlap_filenameA = f"lesion_overlap_group_{groupA_val}.nii.gz"
+            overlap_filenameA = output_folder / f"lesion_overlap_group_{groupA_val}.nii.gz"
             nib.save(overlap_imgA, overlap_filenameA)
             print(f"Lesion overlap map for group {groupA_val} saved as {overlap_filenameA}")
 
         if lesion_overlap_groupB is not None:
             overlap_imgB = nib.Nifti1Image(lesion_overlap_groupB.astype(np.uint8), lesion_imgs[0].affine)
-            overlap_filenameB = f"lesion_overlap_group_{groupB_val}.nii.gz"
+            overlap_filenameB = output_folder / f"lesion_overlap_group_{groupB_val}.nii.gz"
             nib.save(overlap_imgB, overlap_filenameB)
             print(f"Lesion overlap map for group {groupB_val} saved as {overlap_filenameB}")
     
@@ -171,6 +172,7 @@ def load_lesions_and_behaviors(
         print("SKIPPED Covariate processing and lesion volume computation.")
 
     return lesion_files, behaviors, covariates, lesion_volumes
+
 
 
 
