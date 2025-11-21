@@ -57,7 +57,7 @@ def run_svr_lsm_iteration(symptom_folder,
 
     do_regress_out_covariates = regress_out_covariates_on_scores or regress_out_covariates_on_lesions
                             
-    lesion_files, behaviors, covariates, lesion_volumes = load_lesions_and_behaviors(lesion_folder, csv_path, max_score, regress_out_lesion_volume, do_regress_out_covariates)
+    lesion_files, behaviors, covariates, lesion_volumes = load_lesions_and_behaviors(lesion_folder, csv_path, max_score, regress_out_lesion_volume, do_regress_out_covariates, output_folder)
     print("\n\tTIME ELAPSED : ", easy_time(int(time.time() - start_time)),end="\n\n")
 
     min_patient_count, features, masker = filter_voxels_by_patient_count(lesion_files, min_patient_count, normalize_vector, output_folder)
@@ -142,6 +142,7 @@ def run_svr_lsm_iteration(symptom_folder,
                 normalize_vector)
 
     print("\n\tTOTAL TIME TAKEN : ", easy_time(int(time.time() - start_time)))
+
 
 
 
