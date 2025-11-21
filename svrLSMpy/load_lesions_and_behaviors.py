@@ -58,6 +58,18 @@ def load_lesions_and_behaviors(
     # Process behaviors
     behaviors = df['behavior'].values
     print("\nBehavior before normalization:\n", behaviors)
+
+    #check if scores are binary
+    unique_vals = np.unique(behaviors[~np.isnan(behaviors)])
+    print(f"\nUnique behavior values: {unique_vals}")
+    is_binary = (len(unique_vals) == 2)
+    print(f"Behavior is binary: {is_binary}")
+    lesion_overlap_groupA = None
+    lesion_overlap_groupB = None
+    groupA_val = None
+    groupB_val = None
+
+    
     behaviors = behaviors / max_score
     print("Behavior after normalization:\n", behaviors)
 
@@ -75,6 +87,41 @@ def load_lesions_and_behaviors(
 
     # Compute lesion volumes
     lesion_volumes = []
+    lesion_imgs = [nib.load(f) for f in lesion_files]
+    lesion_data_list = [img.get_fdata() for img in lesion_imgs]
+    
+    if is_binary:
+        groupA_val, groupB_val = unique_vals
+        print(f"Detected binary behavior values: {groupA_val} and {groupB_val}")
+        
+        # Indices for each behavior group
+        idxA = np.where(behaviors == groupA_val)[0]
+        idxB = np.where(behaviors == groupB_val)[0]
+
+        print(f"Group {groupA_val} has {len(idxA)} subjects")
+        print(f"Group {groupB_val} has {len(idxB)} subjects")
+
+        # Compute overlap maps by summing the lesion masks for each group
+        if len(idxA) > 0:
+            lesion_overlap_groupA = np.sum([lesion_data_list[i] > 0 for i in idxA], axis=0)
+
+        if len(idxB) > 0:
+            lesion_overlap_groupB = np.sum([lesion_data_list[i] > 0 for i in idxB], axis=0)
+
+        # Save overlap maps as NIfTI files
+        if lesion_overlap_groupA is not None:
+            overlap_imgA = nib.Nifti1Image(lesion_overlap_groupA.astype(np.uint8), lesion_imgs[0].affine)
+            overlap_filenameA = f"lesion_overlap_group_{groupA_val}.nii.gz"
+            nib.save(overlap_imgA, overlap_filenameA)
+            print(f"Lesion overlap map for group {groupA_val} saved as {overlap_filenameA}")
+
+        if lesion_overlap_groupB is not None:
+            overlap_imgB = nib.Nifti1Image(lesion_overlap_groupB.astype(np.uint8), lesion_imgs[0].affine)
+            overlap_filenameB = f"lesion_overlap_group_{groupB_val}.nii.gz"
+            nib.save(overlap_imgB, overlap_filenameB)
+            print(f"Lesion overlap map for group {groupB_val} saved as {overlap_filenameB}")
+    
+    # Compute lesion volumes as before
     for file in tqdm(lesion_files, desc="Loading lesions and computing volumes"):
         lesion_img = nib.load(file)
         lesion_data = lesion_img.get_fdata()
@@ -124,6 +171,7 @@ def load_lesions_and_behaviors(
         print("SKIPPED Covariate processing and lesion volume computation.")
 
     return lesion_files, behaviors, covariates, lesion_volumes
+
 
 
 
